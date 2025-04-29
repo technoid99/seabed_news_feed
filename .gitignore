@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folders
+.env/
+.venv/
+env/
+venv/
+ENV/
+
+# MacOS system files
+.DS_Store
+
+# Python virtualenv tools
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Editor and IDE settings
+.vscode/
+
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-generated metadata
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# GitHub Actions temp files
+*.log
+
+# Ignore Python environment management
+*.egg-info/
+.eggs/
+build/
+dist/

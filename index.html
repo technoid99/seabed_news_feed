@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My News Feed</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+  h1 { margin: 0; }
+  .header-bar { display: flex; justify-content: space-between; align-items: center; }
+  .header-links a { margin-left: 15px; text-decoration: none; font-size: 0.9em; color: #007BFF; }
+  .header-links a:hover { text-decoration: underline; }
+  .source-scroll { max-height: 150px; overflow-y: auto; padding: 5px; border: 1px solid #ddd; background: #fafafa; border-radius: 4px; }
+  .generated-time { font-size: 0.8em; color: #555; margin-top: 4px; }
+  .filter-container { display: flex; gap: 40px; margin: 20px 0; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  .filter-group { flex: 1; }
+  .filter-group label { display: block; margin-bottom: 6px; }
+  .filter-group select, .filter-group input[type="text"] { width: 80%; padding: 6px; margin-top: 6px; }
+  .button-group button { margin-right: 10px; background-color: #888888; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  .button-group button:hover { background-color: #0056b3; }
+  table { border-collapse: collapse; width: 100%; background: #ffffff; border-radius: 8px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
+  th { background-color: #f2f2f2; cursor: pointer; }
+  .missing-date td:first-child { color: gray; }
+  #articleCount { margin: 10px 0; font-weight: bold; }
+  @keyframes fadeInModal { from { opacity: 0; transform: translate(-50%, -55%); } to { opacity: 1; transform: translate(-50%, -50%); }}
+  .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS. Makes the article table auto-scroll horizontally on small screens rather than breaking layout */ }
+
+</style>
+</head>
+<body>
+
+<div class="header-bar">
+  <div>
+    <h1>My News Feed</h1>
+    <div class="generated-time">Page generated on 28 Apr 2025, 20:11 UTC</div>
+  </div>
+  <div class="header-links">
+    <a href="config.html" target="_blank">Config</a>
+    <a href="#" onclick="showAbout()">About</a>
+  </div>
+</div>
+
+<div class="filter-container">
+  <div class="filter-group">
+    <strong>Filter by source:</strong><br>
+    <div class="button-group">
+      <button onclick="selectAllSources()">Select All</button>
+      <button onclick="selectNoSources()">Select None</button>
+    </div>
+    <div class="source-scroll">
+    <label><input type="checkbox" class="sourceFilter" value="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" checked> Sri Lanka tech not cricket</label><label><input type="checkbox" class="sourceFilter" value="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" checked> GNews 總統罷免條件</label><label><input type="checkbox" class="sourceFilter" value="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" checked> Subcables</label>
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <strong>Filter by time:</strong><br>
+    <select id="timeFilter">
+      <option value="all">All time</option>
+      <option value="24h">Past 24 hours</option>
+      <option value="48h" selected>Past 48 hours</option>
+      <option value="7d">Past week</option>
+    </select>
+
+    <br><br>
+    <strong>Search titles:</strong><br>
+    <input type="text" id="searchBox" placeholder="Type keywords..." />
+  </div>
+</div>
+
+<div id="articleCount"></div>
+
+<div class="table-wrapper">
+<table id="newsTable">
+<thead>
+<tr>
+  <th onclick="sortTable(0)">Date ▲▼</th>
+  <th onclick="sortTable(1)">Source ▲▼</th>
+  <th>Title</th>
+</tr>
+</thead>
+<tbody>
+<tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Fri, 13 Sep 2024 07:00:00 GMT" data-title="Sri Lanka’s presidential hopefuls back science and tech - SciDev.Net">
+            <td>Fri, 13 Sep 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMilAFBVV95cUxOMk9scjZLMDFjSTlpRzQ4MzcxLUhTdjZyUjM3MGRKdm1obzZfRVhycmxGRnlVZXExLUQ4aEt4NjJZODR4T1RGeWM2OHhJTWxWeERzY0J0OTdvSVZBeXFsNnR4ME1fWDhraEJMZG1RVHRYNXpGc1VVUE5DclZSd3NYcy00NXZZUlVrYTZFYkU0YWNSYUF2?oc=5" target="_blank">Sri Lanka’s presidential hopefuls back science and tech - SciDev.Net</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 03 Mar 2025 08:00:00 GMT" data-title="5 Tech Companies in Sri Lanka to Know - Built In">
+            <td>Mon, 03 Mar 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5OUS1TVjZWRXY2WGFlUEVydm5VM3NOd2hFc3NxUDV6SXNJcUtRVDdoRGgtT29QVHN4U082UFlZYklnaXNPR0NUSEF1cWNvcDNLRXN3Z2V1bHVocng4YnJLdk1ZeUVhOWs?oc=5" target="_blank">5 Tech Companies in Sri Lanka to Know - Built In</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 21 Aug 2024 07:00:00 GMT" data-title="Early warning and location technology saves lives in Sri Lanka - PreventionWeb.net">
+            <td>Wed, 21 Aug 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMimgFBVV95cUxQNWxIUWRhNlgwMm1LMjgzRHlIUndGVEo5OEhYa0JlNTRPT1JfLVB5OVBaNlhGdUdIdDVEaG5Xd2lDUU9sb3NWMHlzeHl2ajl3YWhqbjJhQ2F2SS1hZlhPWDVxblZRLXB3bG85aG9Cal9jSkQxTkYtR1JMRml3aFlwcWNBY1NUeGxtNGFDUm1vWGIxSW85aE85RThR?oc=5" target="_blank">Early warning and location technology saves lives in Sri Lanka - PreventionWeb.net</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Sun, 30 Mar 2025 02:46:43 GMT" data-title="Merchant Bank of Sri Lanka in tech overhaul with Fiserv - FinTech Futures">
+            <td>Sun, 30 Mar 2025 02:46:43 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinwFBVV95cUxQdjRobUtBMWdTX2JVYkIyWUlWSFp5aUkxVHZReHNsdzRLM2FtdVVZNzBLcTlMYXRmSGFKeU1uUXZiS3R0eUtBa2pLbXdEYWN0VXVwRHFKdHY4SEQtX0JlZDJyVUsxZE84dmVtbWE3NGlDcGhyZ3lOeGhaWERCU0ZReW5DZ3FtU2lOODJqVC1oY1FUUDlWLS1Kb1oyN1NlS2c?oc=5" target="_blank">Merchant Bank of Sri Lanka in tech overhaul with Fiserv - FinTech Futures</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 31 Oct 2024 07:00:00 GMT" data-title="US tech firm invests $8.5 mln in Sri Lanka with relocating of SHIELD from China - EconomyNext">
+            <td>Thu, 31 Oct 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMirwFBVV95cUxOSDBQMVFUTTRKYlFuZjFSZ1pjZWpmU3c0cHdmdzduYUhtcUJSamFIay1VSm84ZUtFbzBRUEtmS1FyY3pPYlhqejZOc2FtYXNWWWRwOXptNThha1RlMUJ4dDBXZ0VnbTIzUDVjZFhyOXZTRzZRWGp5REl2ZTZvY3dWUmJ6VGRsOEdreHBhRk1QX0g2S1BWZnBGRXZlMGpKWklQc0VSTlhRQ1Noei0tM2dn?oc=5" target="_blank">US tech firm invests $8.5 mln in Sri Lanka with relocating of SHIELD from China - EconomyNext</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 22 Jan 2025 08:00:00 GMT" data-title="Inovartic leads UAE-Sri Lanka breakthrough in nano technology commercialisation - Daily FT">
+            <td>Wed, 22 Jan 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxPcUZ1V3lqRV9TWkJwdWViWnVOSmoyMDJfZ0JNbG9oWFdOVVQ0aktibVFLQTFQRWhwZ3dNeFIyU1JyTHBOaHZ5V3cxUGtDRXpJcm5OV0NUYzVsRE94NE1Da2Y1ZDZEQ1JUZENuYXd0a0xoUUNEY01fS3N4R3dFNGZFQm9DcnY0TXZOOXBqaWN1UEZLaWNjeEduT2VPZzRvNjBFQlk5SlRISHQxTENhenJkU0VkR0dHajA?oc=5" target="_blank">Inovartic leads UAE-Sri Lanka breakthrough in nano technology commercialisation - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 08 Jan 2024 08:00:00 GMT" data-title="Microsoft Sri Lanka empowers McLarens Group to forge ahead in tech innovation - Microsoft">
+            <td>Mon, 08 Jan 2024 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivgFBVV95cUxNeVBlYk5IWEZWMjU0ekgyZXpTLW5yMVpmZHM1UFg4UXo3cXQyR3dkcDlrUlpaekV6YWhkNFRkNzNBalQyaHRVaDh2QjZXRjl3MTBXanVVMV9zeXpNT1YxSVlYcUxzSWZGQWlFS1kyTG15dURPbVd4aWowUHluTFJXZ2NQRHduQXlPOTNwYkpOamszUUQ5Zzk5b3daWldyOEt6Rml5QWNoaHZEYXFIYUxQUDNKckh5M2luaHM3RUl3?oc=5" target="_blank">Microsoft Sri Lanka empowers McLarens Group to forge ahead in tech innovation - Microsoft</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 05 Feb 2025 08:00:00 GMT" data-title="Hilton Colombo to host ‘Global Tech Meetup: Sri Lanka Edition’ - Daily Mirror - Sri Lanka">
+            <td>Wed, 05 Feb 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxPMmdKZWJ3OFVOUV9fZFdSeHZMTXZQbS1LNExuN2RMLTlyYzhmUXUta2p0clUxWFR2QUN0VkJKa3VVX3hZeUJMNjktTTlXZnVjS19PY2hZQ2VJbzFwX1RaenpvY1o4NGItcjZvdXdnWWFWUHNFdlVrdkZzbzdFdjYxNTJlVkJpeHlnY3hUVlZiQzlhRDJ2WnJJT1pzalZ3VC05UTNtVlZfQl9UNDd4WWtzWA?oc=5" target="_blank">Hilton Colombo to host ‘Global Tech Meetup: Sri Lanka Edition’ - Daily Mirror - Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 04 Nov 2024 08:00:00 GMT" data-title="US tech company ‘SHIELD’ shifts from China to Sri Lanka - The Island.lk">
+            <td>Mon, 04 Nov 2024 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMie0FVX3lxTE80aHR0SGt0VV91N1hnd1B6ZnRpWkhiOHVTY0ZJR293ZklBb1ZscThqM2lsZW5hTF9nNWpqSlpsQ0duR0NicGRibi1HdElMMVFJWElBel9FM2xhVG5oTmJ1cjRyenEzOGxva3V4OGU3aHQ3ZUN2c3htbndFVdIBgAFBVV95cUxPRmU2OWoxMEMxTG5aVkVuZF90dXVjUHFPOFZEd0JJSmNoeGliMHFxUE5sUlhGSHJRVVc5dmE2b3BmV2dOWnJrOU45Sm1BbkZ5eThnOFh5ckNIZGFkYjlDVnRJQ2dWQ1lzOVQ3YWNQQ09MamRFZ3lOSVZhTURRR1ZqVQ?oc=5" target="_blank">US tech company ‘SHIELD’ shifts from China to Sri Lanka - The Island.lk</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 18 Nov 2024 08:00:00 GMT" data-title="Sri Lankanization: Empowering a Tech-Driven Future for Sri Lanka - Newswire">
+            <td>Mon, 18 Nov 2024 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxQaUI2aDlMUUZSYUJTQjdUWHVTSWV4Si1rWFgtWGVCZGdDZ2tYM3JNVjVXOC16U1l4elZBZEMxeTU2NmNwcHYyeGhnZEc2bG1Bdk1aYm9GOHRMN1JHYzhRcmxpSkpralZldWRKQzN2bFhUQXl2ckZPbnFTckZ5S3lDcXJfb3Y3MHNXRFpSRmVkdXJFVWU1anktYno5UWVfRmkx?oc=5" target="_blank">Sri Lankanization: Empowering a Tech-Driven Future for Sri Lanka - Newswire</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 03 Jan 2024 08:00:00 GMT" data-title="The Sri Lanka Model: The Impact of Civil Advocacy on Tech Policy - Tech Policy Press">
+            <td>Wed, 03 Jan 2024 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxQQkhCeFF4amctOEZXYi1qSmRnczZhTHRoU1VIcC02QjQ2Nk9DcjZiTzFsX1BZU21YVkJ2T2ZfNXJwMGJaM3FMamNFWTdLU2NrU3J3VlJScTFEbVA1SnVkeENhWFFtQmJVRFlhUzVwSmwyOGloeC1YZjBOOFJJZXRLLTdCa3BJYXlKNHNvZFcwcDg2QQ?oc=5" target="_blank">The Sri Lanka Model: The Impact of Civil Advocacy on Tech Policy - Tech Policy Press</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 25 Jun 2024 07:00:00 GMT" data-title="Sri Lanka must establish infrastructure for high-tech cities: President - Ada Derana">
+            <td>Tue, 25 Jun 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqwFBVV95cUxPNUNVLWpHRXpjUDl6dnpyLXZzbzlsTHZCNUNwTHk5dElsdDRyc21PWFktNHlZSEY2R1RCT1ZPc190N0dNb2FnUWRQU1BwV2pTZzBWOFEwOEQ1RDVSN1J2cThTMF9iY1VoX2RyMTlCY1BfLU82eHRHZk5oMkxPR2NyOVVtV09vQV9TSDBhajVYbXYzTnM2WHNEeURuMFhLbXU1ZHEtTDFXVzdqMWc?oc=5" target="_blank">Sri Lanka must establish infrastructure for high-tech cities: President - Ada Derana</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 07 Sep 2020 07:00:00 GMT" data-title="Sri Lanka: using technology to train and mentor staff on the NCD frontline - World Health Organization (WHO)">
+            <td>Mon, 07 Sep 2020 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMixAFBVV95cUxQOW5kOC1hWEFOR09Xa0pENDVqeExheGNOcWxYVDg5U2x2M1pDRlFya1VMdWZ6MlpDODJvdWlxS2xsd1ZKTlBuUnFKSmNLRTFfcFVpUU5qczJ3VTdkUXZGdlNGTUxUQm1VemxtYkpFMHN1N0FGVU1RZ2JtMHJpXzBPdlFIQUpMSkR6YTdQQ3FXNF91V2RmaUFrQlgzWlNUR2xTTU5CNGJIMkYtNlo0UnZMalJlbXVSWmIzUXdOMnEyNDNPMkxF?oc=5" target="_blank">Sri Lanka: using technology to train and mentor staff on the NCD frontline - World Health Organization (WHO)</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 09 Apr 2025 07:00:00 GMT" data-title="India backs Sri Lanka’s tech modernization under new deal - CoinGeek">
+            <td>Wed, 09 Apr 2025 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMigwFBVV95cUxPNU9abFpISkxjNGp6a196RFhyTDJBRXg0N3haY1lDSFRvc3Y2QXg0VHlwU0ZndDJsanBmTjdOUTdaT0UzdFRDLXR3WGZiaW5EQVJySW5GYnhmc253NGNWRVFfSHdVc1RJYkdDSHc3ZDl3LVBTbS0weFRqNTZCSV91cHFDaw?oc=5" target="_blank">India backs Sri Lanka’s tech modernization under new deal - CoinGeek</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Fri, 01 Nov 2024 07:00:00 GMT" data-title="US tech firm invests $8.5 mn in Sri Lanka relocating from China - Newswire">
+            <td>Fri, 01 Nov 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinwFBVV95cUxOZ2NDdnozZ3BIcmhwNkE1MWlMYjl5UkNxRW5FcjBob0draFVsUFRJYUJHOGUzdlg4aGZqajFla2Q5V0xVQm91ZURpX0tMcUZPYXZXNG5lbDBvb2hQR1NJajBneDNFUnRoRU94bEtBZnN5VGY2dEdndWxhSUdpRTVZN1JHbXlXMEFHb3k3Y3lGcEdpeVh1czhFdDZJcGJaams?oc=5" target="_blank">US tech firm invests $8.5 mn in Sri Lanka relocating from China - Newswire</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 05 Sep 2024 09:15:17 GMT" data-title="Orel IT, EDB seeks to increase global competitiveness of Sri Lanka tech business - EconomyNext">
+            <td>Thu, 05 Sep 2024 09:15:17 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxQZDFNZXlJc0ZRSm5jUld6c3ZmUDZRVVdLT2w1Sk9HNl9TS0RqMTByQk00LThxYjVFdXVTMkFLLUhlZ3FkY09UcHlsd2NBSC1YY2NsZ1Jsd3VxVWtwR0VSMnktM1FvVm14eGdmaE1Nb2ZlLUJSd0N4UFdVemJ5eFJfWENZY3BQelhYWFZDVXBZMzYyOXlFSW4wd3VwU2RNUnBDTnF1WC05b3lKVXI3bFk5dA?oc=5" target="_blank">Orel IT, EDB seeks to increase global competitiveness of Sri Lanka tech business - EconomyNext</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Fri, 17 Jan 2025 08:00:00 GMT" data-title="SLASSCOM strengthens Norwegian partnership to elevate Sri Lanka’s tech ecosystem - Daily FT">
+            <td>Fri, 17 Jan 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiwgFBVV95cUxOQ3l0bDc0d0stdjJ5Y3Q2ZUhKMkJDMkR0SjBoMkhFeEo0ZUltaktDV2liT0t0ck9fN2VMVHFLZGtCNWd6MDhnWjkwMFRCdVVUZTRNa1BnOE5nQ0FBaHotODdaMHhweGt6eDB3b1JQcUN5NzlzZTBUV1lCa1V2bF8yRWU1SVdKMXlrQ2FKNGxSR1Q0QlRDZ1AwcDBXRFYxeF9qdUN1VS14M1VrbkkwaElCTUxocmpQOXhraWxoMTNhLVJKQQ?oc=5" target="_blank">SLASSCOM strengthens Norwegian partnership to elevate Sri Lanka’s tech ecosystem - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 02 Sep 2024 07:00:00 GMT" data-title="Women in Tech Sri Lanka partners Mark and Comm to strengthen women’s participation in STEM - Daily FT">
+            <td>Mon, 02 Sep 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMixgFBVV95cUxPSWY2ZWcyenI0eU5BcDJGZDUwdi1rZVlBVlB5M2d0a3B2bFMtQU9ZUjUxVnhubVJtQXhPZWZZcmZTQm1rblZCWXdXT08tYnhZSWxZVGdoR0pvM3pVRDJEYmNLQXdvdm5ySHR0WGRHQUt2aDFtc2g2TVlqSG9QVE9RaUtEQ0F3eXdXblRZQlZTb2FoYlRsZ0pmVm5OTHlOVGVxZmhNU2RMZTE1bEFrTkNjem1lbU1IRV9ZcEZvRFg1U2Y0cVpOaFE?oc=5" target="_blank">Women in Tech Sri Lanka partners Mark and Comm to strengthen women’s participation in STEM - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 04 Mar 2025 08:00:00 GMT" data-title="High-Tech Speed Guns: what Sri Lanka Police can now do - Newswire">
+            <td>Tue, 04 Mar 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxOTDZONFNRbnNhWm5MSEZDbk0yRDdIOVFEeFB0M3BxSUpTaEtSS3dqS2hvQmJxUVFyNDJqVWFSTVQtcE1leExMRUhhVE9jdGZteGdYTnlBNzU1TW5RT3dUYjNwbWl6N01leWpxZjNWYXNNSldYS1RIUUNsWVB2czh1VE1KMnJ5LWVPQTlaNk5kQWRiZ0E?oc=5" target="_blank">High-Tech Speed Guns: what Sri Lanka Police can now do - Newswire</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 11 Jul 2024 07:00:00 GMT" data-title="Great Place to Work Sri Lanka recognizes 10 Best Workplaces in tech sector - Daily Mirror - Sri Lanka">
+            <td>Thu, 11 Jul 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMixAFBVV95cUxOR3llWE1INk5TN3NyNFlpRDVPWlNPc0dpMWhSQXhTNzBBaGRSSHk0cHBLMVF6dTlqQVMwbU44SVItOEljN1pWSnluQXlpQTlhalA1c2h4NjhZSzdfVlAzSk9nVExYYWNVWi1DeVlSdmE0cWd5dTNfejFiZUNaQ3hrYkNaMmw1Sk9lcWpNNmkxcFY5blNILWtiYmdtd1BWejlUTWFrLU5PRkZubUR3LUxjaUVJd0oyTmN1ZzBDb0RGcW0wVWNX?oc=5" target="_blank">Great Place to Work Sri Lanka recognizes 10 Best Workplaces in tech sector - Daily Mirror - Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 06 May 2024 07:00:00 GMT" data-title="How technology is remaking the world of work in Sri Lanka in 2024 - Daily FT">
+            <td>Mon, 06 May 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiogFBVV95cUxPd2tkcmV3UXZRMTh4VHZJc0t1QmV3OEoyMzhIRnpuZktJNWc2U1R1R2g1T0N6V3dVa3dJOWhaT2lReEFHeThTcGoxYk90RmtNeG4yc0FrVzRseGd2dlpvWTBTSVhDNWxMQ1h5S2NYZlFMTjNTZ2RnWlVqcTdwM01GRXdIVDBPVzNBZUZUYUtULUd4VEd6RFVmYlhSeTE3VmJDZ1E?oc=5" target="_blank">How technology is remaking the world of work in Sri Lanka in 2024 - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 30 Apr 2024 07:00:00 GMT" data-title="Iran’s Raisi opens Sri Lanka hydropower project, says it is victory over West - South China Morning Post">
+            <td>Tue, 30 Apr 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi6wFBVV95cUxPem9BSWpJWXhhb0pWcjA0REhnX09RUnZzOWNISjRGZ0tLTi1VN1hkUnZtdTItNHdOVnpWbmNDdnZGMnZuc2k1YjJyZE12OUtxZl9mbzRFeXNiQXd4endnUWNtelF3MzRsVTVER2Z0bXdSZ3U0VkYxT2N6THpuRng3RDlCemdaeTRrb3R0MnozVXdOOGpjYVQ2bTQ5MngySjAzQ0xCbjZzM0h3NVJyT2pwUS03NGRKWUx5bEptSUpOMG5MNG1VbGozZVdTSHFHUVBHNF9MNjh2SVJOdS1RVHhvbHRTaW1Wd1hCSEVr0gHrAUFVX3lxTE1ELVh5emwzdTBPQXdVeFlqMURZRXd1LUxiS253UVhlR3FPc2NKQzVUVV9NQUpIVW5tS2tDRXZGTGxJczh6eUhMTW4taVNEdmdUSWJ0cURBUHUtQWMwX21ZeEpsbkFvRkczenMtV3BPd0ExY1NvSkd4Y2ZBYlJpOHM0LVJBcXp3Vk05TFZtZ3JjUmRmbERPTzVjN0JhUVRCb2hacjR1NFlaSzNjYVh5SUxITzF1T29QZUlSUWRhdEFjS2R3YVA5RnZ6bTFXR2FXRnJnR2FPaWY3WF8wMExmZ2J5dzVBSElwYUtSRTA?oc=5" target="_blank">Iran’s Raisi opens Sri Lanka hydropower project, says it is victory over West - South China Morning Post</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 06 Jul 2022 07:00:00 GMT" data-title="How tech rescued Sri Lanka’s tanking tourism industry - Rest of World">
+            <td>Wed, 06 Jul 2022 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxOTjdhRVBfWUdDOVlEMFlTdV9taXJ6bTdzRkNSM1Z2aXdTXy1rVlB6d3JMRl9DRXo5SmdWYjFRY19JcWZyaGJMU3hsSDQ1OWdRRG1MM0V2VFlrTzIxSFQ0MUdiU0RrczRSNmN1WmFJMXI1QWVUSlFwVHNObmp1cXhPNUVGSEs?oc=5" target="_blank">How tech rescued Sri Lanka’s tanking tourism industry - Rest of World</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 24 Apr 2023 07:00:00 GMT" data-title="Sanjiva Weerawarana Builds Innovative Digital Transformation Company WSO2 And Positions Sri Lanka As A New Tech Center - Forbes">
+            <td>Mon, 24 Apr 2023 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMigAJBVV95cUxQeEhxOFYxa0JkSGlRRENUTUpoUUJVcXE3Zmw5VFRJX1NfMFlnMHU0cVpvOEZqdjR0MGl0RUtGTmpIZmthVlotaG9lQlhpMjZuZlNHN09GTFhDbXFxQ0JTQm5VbGd4LWk3QjJGZC1SRzhCb1lmZVUtZjJ5XzUxWVlmemNCUmRKS3VPem5JM1ItV1NEZHZWdV9Ed3BtVTNxLW9rUEpnUnlSVVpMbzRwbUlQN1JQaWVUVUt1by1sdEdLWFQ3Tm5mQmFHZDdnOGJSS3hCOE9oWGJsbng3dXdyVlpLb0luNzZiRFZqM3hkSlUyakRPZWNJUkEwZmhpR2prNXRl?oc=5" target="_blank">Sanjiva Weerawarana Builds Innovative Digital Transformation Company WSO2 And Positions Sri Lanka As A New Tech Center - Forbes</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 30 Sep 2021 07:00:00 GMT" data-title="Women Technopreneurs: The Landscape for Women Technology Entrepreneurs in Sri Lanka - International Finance Corporation (IFC)">
+            <td>Thu, 30 Sep 2021 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxNQlE0ajFwUEhZSDFjdjBNN0E1V1RPbnFWSGtBV3VGOFBiQTRzRU5FVkxOYVVTU3dCZmNwWGNLdEd4TGVRZG5WSDRzLXBnRFYxRzRMV0w0aUtHUk5HZmtLZDVPRU5yRng4WlYzd1MwQjR6NWNWZ1lRdzlPQWtBN1VNR0M4X2w?oc=5" target="_blank">Women Technopreneurs: The Landscape for Women Technology Entrepreneurs in Sri Lanka - International Finance Corporation (IFC)</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 07 May 2024 07:00:00 GMT" data-title="Sri Lanka – Inauguration of High Tech IT Lab - ANS - Agenzia iNfo Salesiana">
+            <td>Tue, 07 May 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxQanRmMHpSVS1QTE9KQUtocm9hWnlYTnpGWnk5QnFKaXFoM1hiUDFyZXk0MlltUmY4Rk5XVkJkQk11OXpSU2IteGxzV1M4bjNVVEhJNHNOZ29wSl9Jem03UzZ5c3pPa3FsbkM0QWtOeG5lUlR0WDBkZFllcVo4Smt5eFR6NzY1aUNVanlBRkdOS1dXMDhOQUFldmVlSGIwOU9OcGU0?oc=5" target="_blank">Sri Lanka – Inauguration of High Tech IT Lab - ANS - Agenzia iNfo Salesiana</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 09 Apr 2024 07:00:00 GMT" data-title="Global technology giant Cisco renews commitment to rebounding Sri Lanka - Daily FT">
+            <td>Tue, 09 Apr 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMirgFBVV95cUxNcjBqOVVxeG1MaGZ3Y0g1QzVpcmlkZUhhMGJ3aFFPTkRpdG9NMGhTVmR2VmdnUWQ2Ukh6LWJSN2I5NjMzMmx5ajlxbE1BUk81TVZ0cG9GTnlvb1JzLVB5aEMwczh3ckxabmJEWUc1WW1vNEo5WnlNbDR2Ujl5aFVrYkFQVU1aR2NPSG5kb3EwTEJJQmk1WGRtVnhPUjZ1R3JWOXRaUzlsSHB4M1BwMWc?oc=5" target="_blank">Global technology giant Cisco renews commitment to rebounding Sri Lanka - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 13 Apr 2015 07:00:00 GMT" data-title="Unlocking the Potential of Women through Technology for Sri Lanka’s Development - World Bank">
+            <td>Mon, 13 Apr 2015 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxQUjc3OWVZTWQ5WWd3ZzZmVk5lSkFDNVgwTnRKNWZ6eWEyOUgxdzBOc0p5anRqUXI4eXluM2l0SlVfQ0tTY1d0U19MVjlGdWZTZkVwR1lIMnNtaDZ5dmRIeDd6WXRZV3lSWGE4NkxROGdmSmtobnd6Sk9pMEVFRU4tdlQtUWlWa2Fxbm5EbEZIZUdTemhCN1h2WkFHRFVzUDVvSEFNSGFIblo?oc=5" target="_blank">Unlocking the Potential of Women through Technology for Sri Lanka’s Development - World Bank</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Fri, 26 Apr 2019 07:00:00 GMT" data-title="The Week in Tech: Data Doesn’t Support Sri Lanka’s Social Media Blackout (Published 2019) - The New York Times">
+            <td>Fri, 26 Apr 2019 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMifkFVX3lxTE9UOXNLcmJDcVU3RXpnRXBWd3FkcG8xNUNPbW1zeWJIWWNGVThHRjNhOFlzbkFtbEswOTZxSGR0RXlLY1ZYdWZWbXB3VV9hUGZsYnVDRzBvcktjSGFfTGlTUXNYZE5EYzFxNkhTRlcxeWtyVU1FZUtnaEdadmFiUQ?oc=5" target="_blank">The Week in Tech: Data Doesn’t Support Sri Lanka’s Social Media Blackout (Published 2019) - The New York Times</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Fri, 06 Dec 2024 08:00:00 GMT" data-title="(PDF) Forages of Sri Lanka: A Visual Journey Through the Livestock Technology Park, Gannoruwa, Kandy, Sri Lanka. - ResearchGate">
+            <td>Fri, 06 Dec 2024 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi5wFBVV95cUxNaHlNMld0U0hrNVVwem93eFJQeThLMGZsTUdKZWdWd0o2T3lXdGhhbXRrQ0l3U0hIbDRHNFVmZVZ6QmQ4cUl1ZnZJdmZEMlY4VzJfSk1QRTdGSHFHa2c4bnpqb0pxU01EZ3c2NUIyTlhSUklDZUVSamEtYnJXSUZEWXYxVjR6VUowdEdxUjBMTXpJNDItWmhpT3Y3c25qWkFFWnF2c3hrMWVKa2F5YWh1R3lEdXBuRTg0eFprSU81UG5jU0RrOWh1NUZjR2IzS2tzMjFubzNKOTl5b3JHVzFFd1BLUkpUMDQ?oc=5" target="_blank">(PDF) Forages of Sri Lanka: A Visual Journey Through the Livestock Technology Park, Gannoruwa, Kandy, Sri Lanka. - ResearchGate</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 07 Jun 2021 07:00:00 GMT" data-title="Sri Lanka’s NDB Bank deploys video KYC with OneConnect and Axion - FinTech Futures">
+            <td>Mon, 07 Jun 2021 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxPVWRPSW9McGlfZzNBQnVYSTNjMEFRMjdYSG5rLWpwMGZ0UVZYWFVsMG9MR0dXUTFlNnB0bkFJS2ZrZjI2dGd0d183dFY2ZWZOQmdXRThVNjMyU2xLQ1dWNGlPM193eW1uQjRTdU1VUjNfWEQ0dUhpMEtRZVJJLUdyX2xsUGJWUmZrYmktQzlRakM1ZkxQeUpzcjFwNUlHai0yMDBxZjF3?oc=5" target="_blank">Sri Lanka’s NDB Bank deploys video KYC with OneConnect and Axion - FinTech Futures</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 05 Mar 2025 08:00:00 GMT" data-title="“Global Tech Meetup: Sri Lanka Edition” held at Hilton Colombo - Daily FT">
+            <td>Wed, 05 Mar 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxQR2ZSWnVReGhGaFIwN1NEdzdoaFY5VjlHcGZsNDBIWWRNMFNDZGxrWmx3NkE2eXFkWGVaNmNPWmI1YjJIQkRLcTUxTDVCMlNzczZNUkI5dkxJVl9EcWozVk4yYmlnUE5rUU1ETEJ1cTIzVDNuN2VaT1VVcEhtUldYTkV4OEd0OWJrc2EyVFhZdmVuQjdNM2EtdWZETnY?oc=5" target="_blank">“Global Tech Meetup: Sri Lanka Edition” held at Hilton Colombo - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 18 Jul 2024 07:00:00 GMT" data-title="Sri Lanka airport will need tech to cope as volumes set to top pre-Covid levels: SITA - EconomyNext">
+            <td>Thu, 18 Jul 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxNel8zOTM5Y1BUd1I0SDlpbFJVMlgwZlVZT0RTalVzT1VheFZyaVhpUk1NY2RNdWpUM09SbmVtTUlvRmdoVWluZk4wQTR1aHJTSkMtZm1WbVhGRGdXbnlCejRlejVZa3hYTkxZVnJIWE1oZ2xoc3pOeUpVaWYxcWQ3RFZaendlQ1V4SlZjUUlKSk9QODlOazBza21rcHpSVXBrbVdtU1h1NTNZRk5FWEVKdmhUeXpkVzA?oc=5" target="_blank">Sri Lanka airport will need tech to cope as volumes set to top pre-Covid levels: SITA - EconomyNext</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 14 Feb 2024 08:00:00 GMT" data-title="5G Technology remains uncertain in Sri Lanka - Daily Mirror - Sri Lanka">
+            <td>Wed, 14 Feb 2024 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxOc3luTm9HVzZIcW0zN2h1MDlhaUV4NnptMU1UZnRzVWFwWTUxRUN6Ul8wa2xuaEoyR1M2TGFvanp2eDN6bXRqeEtVZE1fRjZsclBWME5tQmRiTmgzMEdobEs5d2JmTHV3dFJMVXdNcnVhOHp2Q1Nmb0NVTlV3X1BoNjcxcUFoTW5EaFFoSzNiSjlsY2NuMlVrdmFrbEM?oc=5" target="_blank">5G Technology remains uncertain in Sri Lanka - Daily Mirror - Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Sun, 02 May 2021 07:00:00 GMT" data-title="Future of Science & Technology in Sri Lanka; Are we ready for a revolution? - The Sunday Times, Sri Lanka">
+            <td>Sun, 02 May 2021 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipwFBVV95cUxPNFpDeF9qbHpvN3ZuZHBLczVvdEF0R3gwRmg1SHBCTnJ2dzZhN0FGVGFXNnNwLWMzY1J2emt5U1NvdGNfd0Y2Rl96eDVqUmhZdHNaQ2lRM0p6WW90TGdTUWRuWDJyNUF1NUVXRHV3ZXpYZ0FtdFBZN1hTb2F2R2lxLXpuZUs0aVgtY0F2ZVFscW9pWHJSTWRNRzUyanBNdHlXUXhfUXY2UQ?oc=5" target="_blank">Future of Science & Technology in Sri Lanka; Are we ready for a revolution? - The Sunday Times, Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 04 Jul 2023 07:00:00 GMT" data-title="Sri Lanka steadily investing in energy efficiency technology - Daily FT">
+            <td>Tue, 04 Jul 2023 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMingFBVV95cUxQNDRKRHBmd05FRXVtTGt5MGtILUNpSW9ZTldoVUZTZGNSTmlMTC0zeUtmVWN5c2xNaXdHbHJUVVRha2pMclViRGhFeEg1anRpanlrLWpRZy0waXRUbTZ5OXJRTXhqQzlTYjBSV2ZTYTBDdm9LMVJtWV80ZzBDQjhOTUxRSk1WZU9mbHdsMjV2NzJOX1gzWHA2TzJWTlFLdw?oc=5" target="_blank">Sri Lanka steadily investing in energy efficiency technology - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 31 Jul 2024 07:00:00 GMT" data-title="Bringing back lessons from Sri Lanka - Renewable energy tech for Ethiopia - United Nations Development Programme">
+            <td>Wed, 31 Jul 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMingFBVV95cUxOdURjSUFIQWZfcVIyTW43ck9JTUlLQ3dLamQzY2pxcl9ZMGV3VjVSNl9FYzdlYW4yTHZDRWFoQmc5QTJwUzB6VUZGWlN0bXUtRnBTaGdZUVBmeHVjRi1oSTRfYjRWNXN2SEduUGR5Z0VJRGc1T3huLWduMWhYV0FhNnVwZHhWd2ZhZmJuY0U5amNqVDNlY2Zpenh1bkdEdw?oc=5" target="_blank">Bringing back lessons from Sri Lanka - Renewable energy tech for Ethiopia - United Nations Development Programme</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 27 Nov 2023 08:00:00 GMT" data-title="Sri Lanka tech workers demand pay in dollars or euros after rupee crashes - Rest of World">
+            <td>Mon, 27 Nov 2023 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMigwFBVV95cUxNUENzdVVzWjNvaXg3STNpRFNqdTZXNnROb3R4THY0RjF0bVIycDUtTFlmRTFPZGVZbm5sd2k0X3VYdVZOUjRQQmJNdndDNHlhOEJ0MUJoQ0lPdGlkdW04eV9LQmFfNGFxMkJVaEEydExsbmJFMW9Dc3ZnN3lXdW56QkRJbw?oc=5" target="_blank">Sri Lanka tech workers demand pay in dollars or euros after rupee crashes - Rest of World</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 10 Apr 2025 07:00:00 GMT" data-title="Sri Lanka anticipates operationalization of BIMSTEC Technology Transfer Facility in Colombo - PM - Ada Derana">
+            <td>Thu, 10 Apr 2025 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiygFBVV95cUxNdzVCTEk3b0VvRDFrN1RLMFpQV1dFV0hnUVlZd0JaR056b09kUl91dTFTMnBVZGMzSGcyZEtUbkZlQ18wMU1GOVJrcUZ1NzBDN3hucUJZeHdZLWthOGdSSXVoa19EcjZ0VzJsMDF6ZmFvS2VvTVZ3U21yY1VEay16WmE2dVFzYUsxeGlZYUh2a05lUXlucGliM0JBa3Jha2NQZDVBZVA5TXZEN2NIeWhJSUtfcFl2bVlGajhmeGJEdXVKSVRUWlF6eVd3?oc=5" target="_blank">Sri Lanka anticipates operationalization of BIMSTEC Technology Transfer Facility in Colombo - PM - Ada Derana</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 10 Apr 2024 07:00:00 GMT" data-title="Women in Tech Sri Lanka concludes insightful sessions in view of IWD - Daily FT">
+            <td>Wed, 10 Apr 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisgFBVV95cUxOb3ZaVzJ2Wk1pUXpaOTZLazAxeEpIZHpvSGtOWC1ieXdlSDBIMlJTbXdzOUNrajJzVnF2ZEhTWENBY3EzeUF2VFNyTl9ISDNNZm9VVTNFWW5uS3FZU3BXN0M3MGh4OVZqLTNNUEpncHZHRnhpR2psY1JJcXktTU1BY3gyWGx2c2xudFZKS3Y3WHdoaDZlX3NvZ2psMUlTOGJIT1RNTEVHVmxaWm5rSXV5Sldn?oc=5" target="_blank">Women in Tech Sri Lanka concludes insightful sessions in view of IWD - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Sun, 30 Jun 2024 07:00:00 GMT" data-title="NSBM and IIT Madras Join Forces to Gear Up Sri Lanka’s Tech and Engineering Sectors - The Sunday Times, Sri Lanka">
+            <td>Sun, 30 Jun 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxOdERmZ0dIblVVakUtN3BoNVB4TEFfTnlSVGh6MXNIRnhxTGF3d21RUkNyMHMtdWptOXlldmNVVVE4ZU1oVlRfZThQX1JPTlY1Vld2WlNoaE94SnhiUHEwcFA1cjB6OWxwQjRvekJIR2pUYXFWMGM3SzJNY0FDalVLSS1VcFNhZnprVWdaZW00cXV2ZWJFVmVRQ3RvSGZCWHBqX1VKaHZ4bmNGb3l1a1dVYUVLN0V0NHZ1dHVlQ2V6OEI3RWFpVHpPQmFfeWFtVWhvZ1poMg?oc=5" target="_blank">NSBM and IIT Madras Join Forces to Gear Up Sri Lanka’s Tech and Engineering Sectors - The Sunday Times, Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 01 Jan 2025 08:00:00 GMT" data-title="Opinion: From Tea to Tech – Can Sri Lanka Break Free from the Consumption Trap? - Lanka Business Online">
+            <td>Wed, 01 Jan 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisgFBVV95cUxOcnh2NVl1aEg4U2FiVnVTckgtSzFIRXJkTEx6SFhoS2VxVjJQNXItSFVpVF9iR2tIMzFsMkFWUUNlZmJrN0YyUURqZkRQckdJQVBEa2VhZkJFOHhBLWVadXpNUEUtb3ZhbnJUcGliQkQtY2NlYW9CaURMSTJXNXlZX0ZpTnFFcUE5T2JNd1J3dnl3ek1fVENWanJOTXJFRUMyM0F5dHY5NjNYeFp5bWE5Z0NR?oc=5" target="_blank">Opinion: From Tea to Tech – Can Sri Lanka Break Free from the Consumption Trap? - Lanka Business Online</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 22 Jan 2025 08:00:00 GMT" data-title="SLASSCOM with Hexaware Technologies to propel Sri Lanka’s tech industry - Daily Mirror - Sri Lanka">
+            <td>Wed, 22 Jan 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivwFBVV95cUxNMS13b1FqX1U3MkxWZzFwVW84Y3FKTjZtYUFGcE5UUHBscWtoejFZemkwZDVJekdQb3pzQWFZcGxieEhaSW1fX2xOLWg3bWxDTVZJeC1wUW1rbUlzR0ZLZVdaUkhXSWFCQmQ5RnlOaDNMNV9jMGN0RjJONnZaQlZvRVE5dEdrTUJ4X1JxZkl3WHFBUnJRTlRZeW5IYlZRQXlQSkN5aVVnZlBQNThTQTFZSHo0S1ViekoyXy10ZmJiVQ?oc=5" target="_blank">SLASSCOM with Hexaware Technologies to propel Sri Lanka’s tech industry - Daily Mirror - Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Sun, 26 Nov 2023 08:00:00 GMT" data-title="Women in Tech® launches Sri Lanka Chapter to empower women in STEM - The Sunday Times, Sri Lanka">
+            <td>Sun, 26 Nov 2023 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivgFBVV95cUxNYVFfOGd3cW5nOUdrYU9wRnA5MS1NaDl0dEhrWlJtTTdmeF9oZUNEOE5MUWpydlViT3ZLWGEybnNmV3d6R21RQ1o1ZGpkbUdTeWtFYnZheDNsZUY4RVIzeHY3RXhvbENwWGtVUGJtWjBHNElUUGtmMWgwU2FVSjZydkhLSWxROUVwWVpiWXdveHMzcDFlVUp0d0ZBRVN2a0VnUGNjbS0yVWNIeW1IMUxnVWVPd0k4YVdoNklaY0Vn?oc=5" target="_blank">Women in Tech® launches Sri Lanka Chapter to empower women in STEM - The Sunday Times, Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 21 Jan 2025 08:00:00 GMT" data-title="Inovartic Leads UAE-Sri Lanka Breakthrough in Nano Technology Commercialisation - Adaderana Biz English">
+            <td>Tue, 21 Jan 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxNdkd0b3Q2VW1qSmF0aUN0MXRVazlwQW90OVZYZ1dENDFmUkNJTU80RzZzWDk2VEtwLW1EUnM4RXk3VHpGQm95VmJkYWxBaUdUaEk0YXhESURueVhSSVdXck9oUjdyb1d1TmoxWTBYU1o1VVd0dVJDTTdST1QzSXAzdzVEbGJpUHRmUlRFZmJTdnlRckZtSFl0T0N3NzdmR1BFZjVHZzU4Tk1tMFdXRXNBNQ?oc=5" target="_blank">Inovartic Leads UAE-Sri Lanka Breakthrough in Nano Technology Commercialisation - Adaderana Biz English</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 22 Aug 2023 07:00:00 GMT" data-title="Sri Lanka Institute of Packaging introduces the first ‘Diploma in Packaging Technology’ - Tea & Coffee Trade Journal">
+            <td>Tue, 22 Aug 2023 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMixAFBVV95cUxONkNUcUVGUUhwMUxOU202OWpDTjgzMmVRNmF5WmZnNUNTNDVqVGRqbndhaVFVZHRaMkdhWlRlOHNvQTR4YlVHc21ReWRJLXZXWnVmeDlKa202S3dRNVYzMWZMb2N3aGU5REVaNkdBeHZ5YUN4Y3JtRVBoMXBuQjBEMGFfM1hZOWNTaGUtSU1zNVYxcU9jV2RSSTBHRThUa1dhZFVVdHd0MzhBSHVxcVVkRVRRQzdfR1pjcDBKVTN2YWsyeHpR?oc=5" target="_blank">Sri Lanka Institute of Packaging introduces the first ‘Diploma in Packaging Technology’ - Tea & Coffee Trade Journal</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 01 Nov 2023 07:00:00 GMT" data-title="India, Sri Lanka relaunch talks on economic, technology cooperation - The Economic Times">
+            <td>Wed, 01 Nov 2023 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi3wFBVV95cUxNZ1ZwR2U2UzNwSFQwNFI3M3QwUk9HejBlUGhsckttU3dhU3FWU2VlR2szdU0wZU9TOEZmek1HbTllSFctZE9Qa0tIYU82QzJYaERMem5TNXJpOUpMYWNlUjFQQklVak9wTkFBVjVZbGxxMmVLbDgxTXhtVXZXWXhSVS1RUVl6RDlYRFU2WlFLUU5QZnI0c0JIU0YyaVZzZXdVUkFkMWtnY2FIbGk1Tml3cVdYM285VFZBcktsYXQ3UmJqZGwycFkzblNCRmtiNGViV2trRG1Na1FGM29xRU130gHkAUFVX3lxTE9aNmRjZ09vRUNkRmhwX0RUbU1HTFBXYlZWS2dOeDNDVEtQOTBzRE9NZ0xvX2Z6QXdHd05vYmpmZGlmNGk4OE0xNXRRUGNmXzN0MFk0Ung1WV9Ic1htUDgzSGdlOVU0a0l3cmNPdG1RZDFWUERyM3Z5M2xIakZGWGJLLUdKX2tUekdOb1M5dkhHYUM2N2VZQWVBMUx5OTRLbVYyZ1RYbVNnRHJDT19mWExmcTctcFA2cHJYTEVOWDNMWFVUNWpoNXlrdi1meWlobXZaU2xiMTFqeHAxSTh3RmNHaUg3Qg?oc=5" target="_blank">India, Sri Lanka relaunch talks on economic, technology cooperation - The Economic Times</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 27 Jun 2019 07:00:00 GMT" data-title="Opinions, B*tch: Technology Based Violence Against Women in Sri Lanka - Groundviews">
+            <td>Thu, 27 Jun 2019 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxNck9tWHNhSzRIWDZvRGdHNW5MZkJaNGVhN0plUkpWZjFXbHlqajNFdktMNTFVNXNldG9vUWFNY3ZDMV9oY1VLZGZ0TFpkWW9Ta29kejFybUN3ZEFsaWhGQTRxUjJYVVhvRnJFaEtMYnpHd1BzNTdTYWJOZ3lhR2ZoQ0NVUDNfLTFwV2tlTVdkYlZ6WTlXempEdjhxd3cwQkpDZUoxVtIBqgFBVV95cUxNX3dUZHNCblM4Y21WUHdBa3A2V3l6OUJzVGluM1JBOWRxOVh2ZWRDRWZzdzgzaEx5UnFLYzF5a2JidV9rQjFGQ1JrWmxybEhBZ0t4RVpvZEdqTEwyR2VUMWJiMkRRSVgtcEJFT0tPTEdNdFV6YldvT3FqaE1ZNi1kSHBNLXVBamdRbFU0cHAzNVNhWHJOYTlWdk85SjhVcXVSb0JGOTZ3aEY2Zw?oc=5" target="_blank">Opinions, B*tch: Technology Based Violence Against Women in Sri Lanka - Groundviews</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Wed, 23 Apr 2025 16:55:52 GMT" data-title="Sri Lanka Post is long overdue for a tech overhaul - ReadMe Sri Lanka">
+            <td>Wed, 23 Apr 2025 16:55:52 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTFBHNkViNUx6Zi1ibmI3UWd5S1dfOHZBTlc5T3RVcUFyMmRnRDY4cl9RcU5uWm1na0JYYXIzU0Vzd0I0cnMwcDNhemJfSll6eDNfQy1lVTZoYUZtaVk?oc=5" target="_blank">Sri Lanka Post is long overdue for a tech overhaul - ReadMe Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 19 Feb 2024 08:00:00 GMT" data-title="‘Long-awaited India-Sri Lanka eco and tech deal to be signed in FY25’ | Today News - Mint">
+            <td>Mon, 19 Feb 2024 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxQeGdoRGhRenFGeWxkZngydnFYaVdUUWxzM25PR1BCUkdDZld2cU13UEpmWXNNdjZTTFJPSlpMb3ROS1NLNW5JMkxCN0p3ZGdkUHZGbkt4UXVvMU5DRkRVbmcwSTRtLUtVVFdXODVwa0R2UC1jUnNpRGZTbDJDbzh4bXA3eEw4WGNTcWphWjZMLUFfQmxla0UtVkROcGZjMnl6Qml6ZzQ2UU5wSjk5MHkzUUV2c1NRTWvSAbwBQVVfeXFMTUVuTUpqQ25UNzViVWtHQnZBU1A4Rzg5U3NHU01pMG1ZZk9JVjdISVptYzFsS2tUOGxvNnhoVE5aUXNqRlRXQ2dtN3ctaFlnZUh2czY3Mk5qQ2p0UDVXN2NMcE5HdWVHMExLcks3UkQ2aTJRNFA5V2R4NUxNUmdUQUQ2bF9JaEZMZ3lCYy1YcnRsWGQ1VU5BWl9Vc3pFa3JkaXAwVDNhZXM2cUlDR0hKVXR2cXhEd18wMzFtTzI?oc=5" target="_blank">‘Long-awaited India-Sri Lanka eco and tech deal to be signed in FY25’ | Today News - Mint</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Fri, 12 Jan 2024 08:00:00 GMT" data-title="SoftwareOne and AWS commend Sri Lanka’s tech prowess at Cloud Migration and Gen AI summit - Daily FT">
+            <td>Fri, 12 Jan 2024 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMizgFBVV95cUxPa1RoWFpLWi00dVVoaUdxU194aDRJb01hZWZVLTFfTG5pQm5kT0hLRVQ1cnprMEt3eXQzVDJvaThBa21JYTluaWptOFYwYkNLVWRCLUt0WFdaREl4SmN2Rzd1ZEU4VlZUNGJNWGViR0dUaW5adzl2a0ROZFZhSmRMemo2TVpZdVByR0g4RFNCUlQ4VThxMnZaUkxoMEpHYWJmUDV4MnQ4VnFrVUVqZzA0NVJ5NWpXamt6TWVkX0JCcUtWcmFpWExVN05KcTkxZw?oc=5" target="_blank">SoftwareOne and AWS commend Sri Lanka’s tech prowess at Cloud Migration and Gen AI summit - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 12 Mar 2024 07:00:00 GMT" data-title="India, Sri Lanka discuss renewable energy cooperation, technology transfer - Ada Derana">
+            <td>Tue, 12 Mar 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMirAFBVV95cUxQYXpBN013amdFdEVTdWxfdF9HTmZtcDB5cFdzWHhGcUxFM2k0eExMNlRqc2VSMjJOMC1mV1ZQV09SbkdEaF9Xb1JjNng1aHp5X3lpM3BPckVoQlpxYjR3bk5nUW1CZ0ZmOEpqTDh6aU9JbHJJbmNvTHo3NW15WFJNdlVfa2Z3R1E2R3BIcW5GdU1Ld2FpQ3pUdjV5Tm1CSFhzSnU0cklrbm1rektn?oc=5" target="_blank">India, Sri Lanka discuss renewable energy cooperation, technology transfer - Ada Derana</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 05 Oct 2023 07:00:00 GMT" data-title="‘DIGIECON Sri Lanka 2030’ ready for launch: State Minister for Technology Herath - Daily FT">
+            <td>Thu, 05 Oct 2023 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivgFBVV95cUxPaV9BYVNEcUxyUkpnZ0ZxVzJQZjYtWHZsdHFmb1Vyc1pTQzlBelJ0UnAtYzBhekxQOTRxWDA4ZmlDanZoQnU4cW5RVHdVaWdGTThJZHZQRFNRcmdXdHJrbHlhTVNCeVJqWm56V2V6ZEgxUFVEU0xJU3lLbDMzcnBTTy03ajlybkRWU1lYRjhxVUstTVR2S3JNbzdtbU1ib3lLNVpLeVZwZm5rLVVYSHVFUlRJZFJxYmNLelFRYWdn?oc=5" target="_blank">‘DIGIECON Sri Lanka 2030’ ready for launch: State Minister for Technology Herath - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 21 Oct 2019 07:00:00 GMT" data-title="Sri Lanka must accelerate its tech industry: Yohan Ramasundara - Daily FT">
+            <td>Mon, 21 Oct 2019 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxOMmZ4SHY3aEFBb0VKYkV4UGtZOExkSDRxT3dBOVRFcXZhckM5bGc1NGNWV2lZVDVuWXdTY09relVCU2tnekNINnBkR3VUb3VsSFFkQTAtX3BkdWFjSmk2ZFc3UnR5MzRrSTBlN0ZtOENUOU9XWS1wUjNlS21vekVyUF9wekRuOVVqcS1vWExvOEs4Q3p6Um1lX2hZaElWZW12eHJxM2h6cWM?oc=5" target="_blank">Sri Lanka must accelerate its tech industry: Yohan Ramasundara - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 28 Dec 2020 08:00:00 GMT" data-title="Technology and Sri Lanka’s future - Daily FT">
+            <td>Mon, 28 Dec 2020 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMid0FVX3lxTE02aTJIb1RRX1dKRjR5WVNJcmZXS1RTMkdMQThjZEN4c1RGcW84X0ZRZDVZUU4yV0NRandQbFhWMFAzMzZfTjN0b1g1aDhFT3ZoZDdISkpicGVXZ1BEQTByd3NybVc0eWxGSHVLTEg0bkI2dEM0MDBv?oc=5" target="_blank">Technology and Sri Lanka’s future - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Sun, 05 Jan 2025 08:00:00 GMT" data-title="Sri Lanka deploys GPS technology to address human-elephant conflict - Ada Derana">
+            <td>Sun, 05 Jan 2025 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipwFBVV95cUxPVW90NVVtYXFfOVphbWxZY29yWk0xdkNvcXdOdzIzY0ZEYU1HTm8wczE5ZENnYVJjZGlsd0xEMmdsdDdWamFveFFUb1N5dE5SRmZiaDVMS1A2QUo3RVRZaXNCelhaZnJjU2NabnBBdlVreFU1SWFRQWQ0Nl80SnBxVGg4WmtaS0JvOFBlZkg1Y2RVOHVwalQtSGcxcENJbTAwSmZBX3FUVQ?oc=5" target="_blank">Sri Lanka deploys GPS technology to address human-elephant conflict - Ada Derana</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 30 Dec 2021 08:00:00 GMT" data-title="Adapt Information Technology Exemplifies Its Drive to Modernise Sri Lanka’s Technological Landscape - Daily FT">
+            <td>Thu, 30 Dec 2021 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi2wFBVV95cUxPQVlLVUdDWXFVekhLR0pTWWpyR0Jtc0lQVURJRzZSQmpaQWgtdTFnN3BzbGJJX09XTW0teENiTkdBYmVDN0xCQTFKVS1Oc0VYeXBkWm5EMUZHcFI2Y1YyZm91a1oxbVNSV0R0SDRyYVV2MzNZWXFTZno0VHktb3dyakktYmlGVlItTkVwMjN3QmRad2owQzJ3SDhXQ19XUGU5Rk4weDF2X0t0c2JkVm5Qd05YMkZnXy1uUDlOUjkwWXFvRVdKTVgwWmNQZko4b1ZXZk1xYllJd0xVdkU?oc=5" target="_blank">Adapt Information Technology Exemplifies Its Drive to Modernise Sri Lanka’s Technological Landscape - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Sun, 25 Apr 2021 07:00:00 GMT" data-title="Future of Science & Technology in Sri Lanka; Are we ready for a revolution? - The Sunday Times, Sri Lanka">
+            <td>Sun, 25 Apr 2021 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxORU9aM2xmeUpScWlSYV9RdTlJaVZNUnh2QjF1LUl0Vk9QVDdjZGp6NUZRU2x4WW1DemVoVlp5bUxrRmF1bWk0SFM3QlJJSkNXSGpmVjRsdGdVRFRBbElPZFlmUmpfSmdQSi1GOVBvMlVNTmRUUkhVaUxFMWV1bmJVdXpNT1ZHWTAtM3JXUUpOLUo1TjVNcHEzMkNZVTJzemtMNEFNLQ?oc=5" target="_blank">Future of Science & Technology in Sri Lanka; Are we ready for a revolution? - The Sunday Times, Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Fri, 31 Dec 2021 08:00:00 GMT" data-title="SLID webinar deliberates path to make Sri Lanka a tech hub - Daily FT">
+            <td>Fri, 31 Dec 2021 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxQdnBZbFc2cDBiSnlJZmFIbloyd1ZJYzE0Mm1oVXdOU25pSzQ0VHVPcVNFZ2JuU05ITjVUcmJqRmJONExDamV3MHl2bGVNVkpFXzFQNkZnTWdxa044TkVBR2JOUG5uNnBaZGF1VjFISF9LMWM3bTVQU1Ytd0d4X0dqMG0tZ1JFSGNabkNmUTFySjhuRmJ3YWV3SXRhTS03OHg0WjRVXw?oc=5" target="_blank">SLID webinar deliberates path to make Sri Lanka a tech hub - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 13 Feb 2020 08:00:00 GMT" data-title="Israel says keen to share tech with Sri Lanka - Daily FT">
+            <td>Thu, 13 Feb 2020 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxQS0hOQTY1UlNpdjVMWXl2TU9WWlNINUpQWFFXOFV2U1dNbExycTNrWGhsOUpMbE43NUtITlotU2NmWmt3Mk9qR0VHbHVYTUhZVk5iNlhuMnFxbWd4QXBWUlBmY2lBdi1taHIyTmhHSXZGQjNmUldiQTlvSkNqeXpoUTd1S2Q?oc=5" target="_blank">Israel says keen to share tech with Sri Lanka - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Fri, 02 Feb 2018 08:00:00 GMT" data-title="Australia’s biggest personal budgeting firm MyBudget selects Sri Lanka as technology innovation dest - Daily FT">
+            <td>Fri, 02 Feb 2018 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi3AFBVV95cUxPTTJ2OTgtTVNzX1AzOVBVRlV2blFKZUxDbVBKVWotbWw3Q3RGMmFSR0FyS1FTLU85dW8tUEVqVmZTUVlkSEliMHpMVnBTelUtalJHNE9qanEybzNoRGREZVNrQ1BITnRrZFgtQzZIMWVld0JzNnZEdVpLM2ozclM0bnFfZjFTaWd0UENSTkpRXzg2aEdlN1A0SmtBVmR1LWRLQkRDbGc4U0R0QkZDSndjYWVDYlNvZHJuNDE3U3R3eE9mbF9iNnlCc2dHWmpsMU5weEVMQnhld1ZNdG12?oc=5" target="_blank">Australia’s biggest personal budgeting firm MyBudget selects Sri Lanka as technology innovation dest - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Sat, 05 Apr 2025 07:00:00 GMT" data-title="Sri Lanka, India leaders launch hi-tech agri warehouse, solar plant - EconomyNext">
+            <td>Sat, 05 Apr 2025 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMingFBVV95cUxQUHFUTnlkWDJuWVM4WE50b1FtTmZsUmhWMDVhMWNKOVZlTDlWVmhPM2RKSnQzWUZFeWVaTl8yVllaSldIWFlzbG5wM2RXa3dBOUVDNGNoaWU0RHluSkVOa2N4ZmVCVk1zTGd5LTZ6dnVjOFgzQXFweFlyakYxWVVFYV92d0lPYVRFMWFMaWk5WW5WVld4VjBTMXFHbmNyQQ?oc=5" target="_blank">Sri Lanka, India leaders launch hi-tech agri warehouse, solar plant - EconomyNext</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Tue, 07 Sep 2021 07:00:00 GMT" data-title="Technology Parks to be established in Sri Lanka - archives1.dailynews.lk">
+            <td>Tue, 07 Sep 2021 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinAFBVV95cUxOSXRaTmJNWGZEeWlYaVpoX3d2TEFCcnFWWWxZQm94ZTNDMUJIajRTUFhsS0FLeWd3d2RtTFJ3d3ZNeXpKcmg5dHlRcTlsdlBYTHFjcHlVRHJPbVJ6Zm9fd3cxZnd3TUwzamo2clpQZVV5azJrQVlZdHI5cW51TnZibE5SRDFOY2txZXdKRGdpRXBobGVfMzItODFYRWM?oc=5" target="_blank">Technology Parks to be established in Sri Lanka - archives1.dailynews.lk</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 15 Jan 2018 08:00:00 GMT" data-title="Technology-related Violence Against Women and Girls in Sri Lanka: Key Trends - Groundviews">
+            <td>Mon, 15 Jan 2018 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxOaWJ0azVkb3l2cm1YcHJyYUFFNFJVMlpVXzF6ZkZib1MwRkRmQTU5TERkclVtSmpRZDVHczlsb0NqU0s0dU8zdTU1TnA1UnVGZTZWTWNRSzJkYnlnUzBITTlEUUFqMmZMSXRTdnhaRWlWS3BvQ0EweEpHOU5VV0NHWVNYWFNCc0haRzVhek1GUjl3bjVXallfdXlST3dCaE9iMHVtMU15dVhOM0RUSDZ4WtIBtgFBVV95cUxQMHppVGU5WWlXZWxsNHltMUhzSUxLQ3VtSXotSEtRTXpLWVFfZkR3dzZyS3lwd1d0SFMwTUljdkRiUnU2azBkcExKN0tPbUlMb0U5WUVmMmpjMUxsVFVXMTN3RG1yQ0pPc25MYXdBU1NhWkpJTEdjc0ZfZDdOajcwV0tfMUhMSWJtcnZyN3NNYlVsUmd1bEFvZzBwal9VRXZaazlhS09SY05EQzVnRmtlQ3ZoY0c3dw?oc=5" target="_blank">Technology-related Violence Against Women and Girls in Sri Lanka: Key Trends - Groundviews</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 25 Mar 2024 07:00:00 GMT" data-title="First ever solar tunnel dryer technology in Sri Lanka - Daily Mirror - Sri Lanka">
+            <td>Mon, 25 Mar 2024 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxQV3YyMmFFQlhDZUFTMU8xUmJmN21Tb2pxRi01MFg3ckxRSUNMd0ZOZ2ExdW9Pd2pyODRJTEhKelo5UkxtUWVwYjI3a2U3UktUWmZmck1rejRsaUxDOUdna203YUpyQmtCNXBJQ2xSckJWOFFza1NYR2Fkdnp5NlZ3NW9pLXZVbDNZVjZKT1plcmRJcTBGbHRQRUhJRTNraEJvMUExSUpxR2k?oc=5" target="_blank">First ever solar tunnel dryer technology in Sri Lanka - Daily Mirror - Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Mon, 28 Jan 2019 08:00:00 GMT" data-title="Orel IT launches artificial vision technology in Sri Lanka with Wickramarachchi Opticians - Daily FT">
+            <td>Mon, 28 Jan 2019 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxPNVZCNXIyU0RVMWx2dkZwd0o2MWpyUk5WYk5zbmZhcEtwaTZzTkRMTjItRGFEX1N0bnNkckVscXN3Rk1nZFMwNlVsSEtJeDlXV1pRbndIcE9adU81UGdUTGZnY1JPMEJ5MlBydVBtZnhpNFVtelA5ekZIOW8zLU1Ta1h1UUd2U3hXMWMyMi1BNlJQWE5EWWlhazRabVQ3WWJOSVpZcDE5Mk9pMXBER1NnNkhucVBKT0hSazJSTDYtV1hkb0tfYXp3?oc=5" target="_blank">Orel IT launches artificial vision technology in Sri Lanka with Wickramarachchi Opticians - Daily FT</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Sun, 17 Mar 2019 07:00:00 GMT" data-title="Liyanwela appointed as Head of LSEG Technology Sri Lanka - The Sunday Times, Sri Lanka">
+            <td>Sun, 17 Mar 2019 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxPNV85SzRoS0FmbnRqd3ZWRl93YVI5NkVKSEx6MWh6ZmRmUHB5U2Z1NDAyZU0zM1JkN2M4UnBaMVF2eEMzc2U3bXBzNEFYc0IyNG5HWkxkUjF5YVM2eEVNT3BaODN5akZnWi1CUkhJdU5JR05Na253TXdYYS1BNHpWd2tqU2NDRkpnVGItQWtmT2h0WWY0RHNKaDJ5cC04ejZ5N2ZVQ0cwNmROZHJTNkZNNThpMjdsU2c?oc=5" target="_blank">Liyanwela appointed as Head of LSEG Technology Sri Lanka - The Sunday Times, Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Sun, 08 Nov 2015 08:00:00 GMT" data-title="UBER’s mobile app technology brings about cashless taxi rides in Sri Lanka - The Sunday Times, Sri Lanka">
+            <td>Sun, 08 Nov 2015 08:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMizgFBVV95cUxNV0JOcFYwVGRDRXRvazlYcW5mV3JnTFpucW1HeXd3SmUydFM0Vl9KWUJiSVNoU2dRUm1rdWxuWEJHUkhXODlPREtQSmo3NnRuSGgzTEUwSnFMX0l3ZUVUVlFvOHJJQ0ppMFpGekp4eWxsYkJtSWd3alo4b1NBdkFERG9BZEJqdThTbE1kOUdNa0puajdpWDdfVURuQlcyMWRQMHB2U1pzbDFCSHRzTFVwSTBWSUktV0xmVnEwWkx3VDFPeF9nRTdVVkNyNVBRdw?oc=5" target="_blank">UBER’s mobile app technology brings about cashless taxi rides in Sri Lanka - The Sunday Times, Sri Lanka</a></td>
+        </tr><tr class="" data-source="maCAYr6FNCvIFgfQJJUWNuLRDAvg2Lm9aQhlb8IpzhM" data-date="Thu, 06 Sep 2018 07:00:00 GMT" data-title="Jinasena launches Sri Lanka’s first-ever nano technology water purification plant in Polonnaruwa - Daily FT">
+            <td>Thu, 06 Sep 2018 07:00:00 GMT</td>
+            <td>Sri Lanka tech not cricket</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiyAFBVV95cUxNaHlUaUtoQ3kzbVoxakh6WmJRdW1ZLU1YQkNxS3VDYUZ0akVhTndwamQyeEYzeWFsU1BYZk1OVUlTbjE0NmI1Z3dnSVFfVTN1R3lPY1BPOFl3ek1IOXJJLVJ3RGRScWVQcEtZX29yOFpZU2dlMEJsVUp6N092SXhZa1RwQ29DUzk4MnYwOGtMNzMycFM2Nk1uOGk2dnY0QTlsaDBfZFFUQmtxNnVNcHpuNU9zNU9faFNhNEdlV2RsTkQ2QVpjSXNOTQ?oc=5" target="_blank">Jinasena launches Sri Lanka’s first-ever nano technology water purification plant in Polonnaruwa - Daily FT</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Mon, 28 Apr 2025 07:57:00 GMT" data-title="罷免總統容易嗎？朱立倫宣戰國會520後罷免賴清德，在野聯手難度高 - 遠見雜誌">
+            <td>Mon, 28 Apr 2025 07:57:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiTkFVX3lxTE5CaVI4VDZhU0hpNzRqaG9Nb0hpZnY4aDNpX3YwajAtTXdGT2lrUVBiOFk5NmFpT1A5RHFNYVg5eS1jRkpMT1VURkFQUmI0UQ?oc=5" target="_blank">罷免總統容易嗎？朱立倫宣戰國會520後罷免賴清德，在野聯手難度高 - 遠見雜誌</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sat, 26 Apr 2025 13:36:19 GMT" data-title="總統罷免可行嗎？門檻是什麼？有什麼條件？ - 奇摩新聞">
+            <td>Sat, 26 Apr 2025 13:36:19 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiwwJBVV95cUxPRXFvcEVqTFdnLUg1UFI5OHZ2Nzg4TXpKMTFZcVJDdTBaLVBqb0RVeFB6Vk1zcjl5al9kZXMya3lEUFB4RXEwMlRPb3Q5eXhlUkQwMDF1aS1yOGc0RGdtNjdrdHRpcllmb0YtYVNVT2Rad1JCMVM5SjI1eXZJM1lrdjFlaE9aSTJ5QVFBNk5yWW1Mal9qR0ExYWVsNkZWUm9IUUx6ZUlYUlJMSF9fM1RIbDdkWDY0RkRucExaOHZhQUtzU200eE1OY1hNWnhCdm12M3p2V3dtZWxNNUpxVlNJeUdGeHlWejBMZ0thenhsM0FYRjNGNE5DelFadUwyamdTSjBKRlNmU3gycmp0d1dndmFuZnl0bHJmQ0l5Ry1WVFhvcFFYVU01RHQ2ZFN3T255RWhHNHUxc0txYjRueXZiM0dNOA?oc=5" target="_blank">總統罷免可行嗎？門檻是什麼？有什麼條件？ - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sat, 26 Apr 2025 11:27:00 GMT" data-title="426上凱道／朱立倫喊「罷免賴清德」！難度多高？總統罷免門檻曝光 - TVBS新聞網">
+            <td>Sat, 26 Apr 2025 11:27:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE14Z284WWZpTUFIUnktWFBHeXdac1pZSHJ1X0FwM081azBBTzVGLVhYREo4NWc0emVXS3BIa0szSFJSa3ZQZTFqelRrTkpFVU9CZFhj?oc=5" target="_blank">426上凱道／朱立倫喊「罷免賴清德」！難度多高？總統罷免門檻曝光 - TVBS新聞網</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Mon, 28 Apr 2025 05:54:17 GMT" data-title="朱立倫要求民代協助罷綠委連署 520起全面發動各式罷免賴清德運動 - 奇摩新聞">
+            <td>Mon, 28 Apr 2025 05:54:17 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqANBVV95cUxNX1ZtSkdjUE9pQ2U1SFI2LVl3bm9IZ25QWmxtcnlTS25LMTdfbktzWjdzVEJPMzgtdUVBZVlpeWhBVDM2NkxZNERoQ3p2NHRKaUdXVy1CX2laQXVHb2lpcC05UEZUWHl3QWlZeUtyYlE0dlJhWTloWVRYendaYXJHWi1TWllIaWVmTEFsc0stMG81V2Npb0U2N2VIVm1QaEtOQjZ6R2toaVByRGdobTRhVFRYdU9HVjhBaG5Yem1DWUY2dXB6Y1hpZTZhTGgtSTdZa0RJdTM0V1pRcTUwLTdSVGc2eW8xUjhhSEtTOG1UeEFHeEZESm05SWprOWdRSHdyU1pjdGN2RGpIeXVwQnluM2dydHNYaDljRk9vZVBtRlNNUGR5QzVPMS1VcnVRVlZIRU9VZUh5UV9oa0NCdlRCbXllSlJEV2FiSEJaMGFpOWFXZW1hWk1NUDhhdkxBNUJONjhYdnhqTC1BZ1VxRk5ONGJkN3dWU3NHRE5WXzJEX180bVl3Y0ZENFZVZnJkOTlDeXdPcDJyNDZDdTE5RVBKQzU3cG1pZ3g0?oc=5" target="_blank">朱立倫要求民代協助罷綠委連署 520起全面發動各式罷免賴清德運動 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Thu, 19 Dec 2024 08:00:00 GMT" data-title="選罷法、憲訴法、財劃法修正案拚三讀 一文整理3大法案爭議內容、朝野到底吵什麼？ ｜ 公視新聞網 PNN - 公視新聞網PNN">
+            <td>Thu, 19 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTFBqSFBERjhaWnZ0SlpNQ1JQSnlzRXhCR09WTnBzMEFFNEFMNDJZQzAxbW1NMmVtd2xvb0J0YnVYdW1IX2xrWTVIOS1tRm85YWvSAVRBVV95cUxQOUVuNmZCM25rM0hodHFZUXpmV25FVEtJWm9HWTdGQjZlNUJhcUdrOEg2UXdUWjJsVHVzaTVCQkp3b3JYNS15TlNXNDktMUZFdXpDTmI?oc=5" target="_blank">選罷法、憲訴法、財劃法修正案拚三讀 一文整理3大法案爭議內容、朝野到底吵什麼？ ｜ 公視新聞網 PNN - 公視新聞網PNN</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Fri, 20 Dec 2024 08:00:00 GMT" data-title="選罷法三讀 罷免連署需附身分證影本、偽造假冒最高罰百萬 - 聯合新聞網">
+            <td>Fri, 20 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE1WcC1UV2NfbTRuQVZPNkF3NkhSQUFiTEZsMFZZQWxHYW5QYWtsSEU3RXE0VGhkSlpTU0dnTlZ3NzNDTG9rYUUwT0F6YWppRFhHaEVR0gFYQVVfeXFMT0hoSUFramF0LVp1RGFKYWg3bnR1dzRhQU9IWnYtZEVpMzBJeW42QmhjU0pLV2NTTFFnWjlZeHpCRXRkWVhBTExLeWFsT3Zzb3hVd0JROW4tcw?oc=5" target="_blank">選罷法三讀 罷免連署需附身分證影本、偽造假冒最高罰百萬 - 聯合新聞網</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 08 Dec 2024 08:00:00 GMT" data-title="南韓政局突變：總統罷免案遭執政黨抵制未能通過 尹錫悅表示願提前離職 - 美國之音粵語網">
+            <td>Sun, 08 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiwAFBVV95cUxQOUVIMjg0elUtSmFGTGRxcWRUSG1FU1p5dUpEMGQtcDNueDJqMTNzM21UTVhoZzRWVWJpWUEtS3lyT0RTLTE1dTJsamlxZXVuWWF4a3dEY0szWkRiSXlhV0VoOWx6bTI1TzF4cVRtS0ZnbE1VaTEzSURJaTdrLW5yUnk1aHVKd21aVms3QlJSMWJ0N1J6RHpnMS1rMmFHUDQxUHFJOThGUjhNUnBSZ3hUYXlieUpVenZnWVkwcU5NOHjSAcMBQVVfeXFMUEZXbUxTWlpaVEpfZUFCdXlScE5RM0hGbk91OHAwYjZUM3REdVlQMG00ZzJGNUpPQ2xNV1hrNkpXS2dGQkloRkF0RDgtU2pabm9xZlFjaU8tRDRuNm9GUVJSd21MSVFLYTFCcGNmaThadlMta0NKTTdEUF94ME9jc2YxUWh3em1NZlc1NUR3enNpT0NIUE5uNmRkczloNUlnTmg0bmVKYW9YeURnM0ZjdnZ3azlEaTJuS0dVMUl3VExNRWc4?oc=5" target="_blank">南韓政局突變：總統罷免案遭執政黨抵制未能通過 尹錫悅表示願提前離職 - 美國之音粵語網</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 27 Apr 2025 04:19:00 GMT" data-title="朱立倫喊「520後罷免賴清德」 綠委：不可能任務 - 奇摩新聞">
+            <td>Sun, 27 Apr 2025 04:19:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipwJBVV95cUxNTF9CZUFRUzlaV19JSDVXS0FkQUNWalFNbE53OFZYSDR1WXZoM0paMWd3OHB6akV0WXhsLXR5ME1VNTdZMjRWQ2ItYTlOaTN0R3p3eUJjVkJPdnNOZUFvZDBoZVhqUG1iQ0JoenN5UG9fRmNOYlhJRE05aXZJOHo5SHdBdW5UWmFyTUJjOExGY0JQeElCZDVmME1hNWk3cm1tRGloUmZ2eTVzelcxR0VqXzI5UjZtS2NndmFIQUFfVS1qQWtIUUI5eTVlVUp1Z1U5Ty1hQUtjZTU0elJEVnZjc3h2YU1YQlNNeERRTnB4MF9OT2gtekFQRHpiQkF3UmRRTHRweFRxQjdza0hnRWsxT0x5c1BJRUUxMnJWOC1fUHNWSkxQa1cw?oc=5" target="_blank">朱立倫喊「520後罷免賴清德」 綠委：不可能任務 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Thu, 04 Jul 2024 07:00:00 GMT" data-title="觀點投書：該討論的是降低罷免總統門檻！ - 風傳媒">
+            <td>Thu, 04 Jul 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTE80ZVRPQ0JITk84NDQwNXFEXzZYOEFOazFrckJ4RF9DaXNUanladmVvRU1mY3g2UjhEeDg4dEhYZ25IWDc5TEp5SjV1eHM?oc=5" target="_blank">觀點投書：該討論的是降低罷免總統門檻！ - 風傳媒</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 14 Jul 2024 07:00:00 GMT" data-title="談選罷法爭議（上）：美國、英國、日本的罷免制度，和台灣有什麼不同？ - TNL The News Lens 關鍵評論網">
+            <td>Sun, 14 Jul 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiVEFVX3lxTE9SdUVaOUhFMllmTFBBRTJ6RmpEb3FwN21JQ2JsVHlxU1NTbnJNSlBacXpsNzZsOUtRVERMZEZxMmZ2dWRRQUhURUFRU0F2RG16ZVBpcQ?oc=5" target="_blank">談選罷法爭議（上）：美國、英國、日本的罷免制度，和台灣有什麼不同？ - TNL The News Lens 關鍵評論網</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Thu, 27 Jun 2024 07:00:00 GMT" data-title="國民黨修《選罷法》 　傅崐萁：罷免總統、立委門檻不一致很畸形 - ettoday.net">
+            <td>Thu, 27 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiXkFVX3lxTFA2bjVGUnVaWlBYU1ZCcmdpamY5dWlPc0kzclAyTl92THI3dDZIaGs0c1dxcEVqenVOMEFWSXJtUUVpeWY2dHFad2doRjRIMklZUEdHUmUxRmgtZDFhUFHSAWhBVV95cUxPc0F2aW9Ha2lwRGI1XzJVemMtLUxOTElORkJOSGdIVnRNekRlVVUyNjh6Y0o2WUJfa2RGemtjemVHOGM1UG41eVZQWDhVeWc5RzlLYjlCNDRKVVB0R1BGeUxGaENaSzdfVg?oc=5" target="_blank">國民黨修《選罷法》 　傅崐萁：罷免總統、立委門檻不一致很畸形 - ettoday.net</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sat, 26 Apr 2025 13:39:15 GMT" data-title="凱道「戰獨裁」現場喊湧入25萬人 朱立倫高呼520後罷免賴清德總統 - 奇摩新聞">
+            <td>Sat, 26 Apr 2025 13:39:15 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinwNBVV95cUxQWkd0YktDQUluUEx3d3Y0OXJ1TGZvY2tZZ1lYQ3ZDMTV2V2tNcERhLWFrTHZxS2J1UVZvTFZSdERJMEthR05KMVhPMWNaM1dSNlpocjhEVVZIb3k3RkhtaU1VN0UydlhuUTBJUVBXY0RmNkcxejd4LW16UXN1ZVZxbkN4SWl2UkJPQTZuYUwyYmVtbmQ1dW5KZ1J6UEE4bEJBdmY0cnBKQUdQcFR1SmxJcW9nWmJRTU16dzNqYkMzc1JBa2JNd3ZTb00zdUJ0N0JCTHFTbzZJQ3hSUEc4dWg1aXl6b1otdG1ONkNnVzBlT0dNTHBlMHdZR1AzTVhVckljbjZaZ2tlU3JMR1pnSnh3MDBMZi1WY1pTMnJmQlBRRmQ3Z3dkalNhWUJ6Y0dJTUQzMU8tWnlDQUxISFU0WENvcFhFcERWbnFYcG1XQmJRdmkybVNFR2VZUDRtZGMwUG9kZF8tVnlFc2FINWJVTnJUaXNpek5vSU5tVXZrbjBxLU5neFpsRFYxNWdHN0lpUmdLdjFYaEthRGxfY3lOTkFn?oc=5" target="_blank">凱道「戰獨裁」現場喊湧入25萬人 朱立倫高呼520後罷免賴清德總統 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 27 Apr 2025 06:20:39 GMT" data-title="朱立倫喊罷免賴總統 張麗善呼應：賴清德不是「仁君」 - 奇摩新聞">
+            <td>Sun, 27 Apr 2025 06:20:39 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi0wJBVV95cUxNOGhaRlpDSHlydGJxaGJ5cHEzZXdkZ1JzdVh5Q1FiQWplUGpQQ3J1bGZUNExuUXNkZFF2QzFWbU9RT3Rpd05lQ3J6SjFlVnBOSHd4Rlhoemk0VXl3a09aX2Ruc1J5cEJBTGtrX3VVTjRNQkQzbWdaTkhiRXJ1VWJaYm9RdFlTOU5pNmhxRHJFYXM1LTFPTndKMTVfRlV4Wl9nZzIyRDdYZFhiMUtoZHhJUE1xLUFmMHZiSUJUS0lkWW4yNks3eS1YWk9jeU1sN1ozWTRnZ3dXVTRNQnhHU1lRdGQ3ZmctclFMZ1dtbHNQaDJwS1A2aUlzY3oxdmNqdVpUamJCX0pHVFBtSEM1WUgzX3MyZlJ2bldCMjdpLXFnV004VnZSR2V0WG42Sk1GVy1CZ0tWTDl4ZmlFdkhQYTRYRktaM3Rua0VQRUNyVlB1UC1nSW8?oc=5" target="_blank">朱立倫喊罷免賴總統 張麗善呼應：賴清德不是「仁君」 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Tue, 15 Oct 2024 07:00:00 GMT" data-title="傳藍鎖定獵殺20綠委名單反制「大罷免潮」 粉專喊加碼劍指賴清德 - 奇摩新聞">
+            <td>Tue, 15 Oct 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMikANBVV95cUxOVHQ3V2QyYW1KcHFhR09FM0FvSnRlQ3BtdGd4bFVZWjBlRU9LekJkdDNrR1dReld4N0FXdlkxU0xsY010T0VUbFdFUzlJek12cENwQ2lwcDdjQ083blg0dmRmRU4xT3IxMHEtN1hUODMxS0dETmZVMHU3T254LWQ5MHFFbzBCMEJkUi00bWRLbVZOWVF6Snp1WmhvVHhpcWc3U1VTQTBIdmZVdFNKa1Zab1p4OEhDdHowWTdVMHVUZzNpLWdVUGNBUTZOSl82ZFVxLThRSXZXV0Y1R2xyRnUxTEhwRERieG5LdjdwRlRObGRWR1VUbkhWUWNsdmpRczZTMWxhOFBjcDNxcnpQQzZ0MU01dW0tbmFvX2NfbURlbW5od00tb1pacW15eHBZSVlfdTBNaHV4cURzb0FIaURyeXNIRjRIdGxOWl9sVFNWVnRQTVZUaTVKMDdtSGZ0cm1wTFVBX01SRzZhdktJdkM2QWdWdWgxYWl6a2szUEk5djFVaHpQdGdvM042dVhRRkdU?oc=5" target="_blank">傳藍鎖定獵殺20綠委名單反制「大罷免潮」 粉專喊加碼劍指賴清德 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Thu, 13 Feb 2025 08:00:00 GMT" data-title="大罷免 人民受害深 - 奇摩新聞">
+            <td>Thu, 13 Feb 2025 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxQVXRrSjc2WFdGN3BseldMUjdwQThCb0pJaW1wNmcySGVCLUFsLUVraUVDY3hJUG01akVqWS1wSmFuNVBkekNZSzZKek1jUUhzOGk1Mm55OHduTmxHOVNLQW53RFpkMk5oZHRvU2Zsci1lb0F4bEN6SHJXaFRjMFhvSV9mbGJ0S3hMZ1dyc1dUZGhmSVRVX3RZczh2OEtSazdGSmhlRXBDWkRyYUIxOFMtckwtYnk?oc=5" target="_blank">大罷免 人民受害深 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Mon, 23 Dec 2024 08:00:00 GMT" data-title="《選罷法》1分鐘修成「鳥籠罷免法」，英日美有誰這樣做？44年修正6次這次最離譜？一表看差在哪 - 奇摩新聞">
+            <td>Mon, 23 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiugNBVV95cUxNb0lzYkRiQkp0Q1YtRjhQaW9Zc0tGb2JudS1lb2RGOFQ1QTYxQjhJX3JaaUxBWm1Ba1lJZ3JIQUh3eXhqd2E4amFoWkRFR1dUYk12UDR2a1dCb0hJRlNOU05ObEp4VGhXYXVkN21GMlJtRkp6YU5uY1FSeVBqQjN5N1JieDVPcFQxN2hZUWo2SllzMVBhRWpacVotTFdGSzBnbFAwOUluaEV5OUVWSThGZVY1UHh4VHBlQjkxQUE2WWIwaHhNQm9TRnQ4ZWxFa0RNY2c0QXZqaTQzQ3cyM21HMk94d09zMWIzUDR2OFZuR2hYQTR0Wk91ZHE2X09SVmtSdEs1WHJTUU5zS3FpS2RQV1h1NmJqQzNHeWNVa29SN3VzQmpPbmtuVHpaSVpTeGlhd2VDZGJMc2lFU05mWmxYSm5xSmdmZTAtWkpJMVdhamtheUlFNEdDbUMzSnB1d0xwd1FPQk5KMFJ6VlVoaWJaNnFaY2FUenctd1BGVndUdWxjQzY2bFhxclFWT05CclNmZFo4N2NzbjV4VUpyV3pvUm1VRjY3TmlXSDZCU1Q2NnZzSWVPeVEtbnlR?oc=5" target="_blank">《選罷法》1分鐘修成「鳥籠罷免法」，英日美有誰這樣做？44年修正6次這次最離譜？一表看差在哪 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Fri, 20 Dec 2024 08:00:00 GMT" data-title="選罷法修正案三讀通過 黃珊珊指「沒提高罷免門檻」：杜絕幽靈連署 - 奇摩新聞">
+            <td>Fri, 20 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMimwNBVV95cUxQWm1DVHNtZ0ExMTllVW84ZXNqWmlGQVJaYU16NzZ3T2xiSVNfQ2JoVnByT19ZczNBckUtd3FYUGlPNmJCRW5RU3hDeHFNaVhEaVNxOVE4bzZ1d0o0bm4yUi16RUZ3QlFIYjQ1US1Wb3o3dkI3U01UdEtRcFlhdG02V3ZRMUVoX05BMExUaDRSMmFCUFNFUmF5cS1xc0pFczF6VXBHdFVNX0ZYUUt5NjFjUmJXaHhXeFUyelhMLVhucG54ZkdIUFpHNFBES0FXTnhnWnFjVWJPNnQwakxUNXVkeXYxbU90TlpIenctQXBEU1NVeGtCT1VUTlczZ01KS1BmeVpGQVFlSEVvUmVCYWV2N1BKZklxTVpneVBjLXg5eEZlU2ZfZWxJVDM5aWRCb0F2YjE3MkxaSjdKWmR3T0tyVVdIMWhDQTctS1lCZEJIS2Q5Z2xFenBCR2w1bTB5clAxRlY1Wjh1WE41UUpfYU53WUVULXd1WUFlckJiV3B2MEtkQW1ZNFc5ampLZ1lsSDdObWJvLXoyX1k3RVU?oc=5" target="_blank">選罷法修正案三讀通過 黃珊珊指「沒提高罷免門檻」：杜絕幽靈連署 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Wed, 08 Jan 2025 08:00:00 GMT" data-title="互嗆罷免不如倒閣？徐巧芯提1條件：國民黨像笨蛋嗎 - 奇摩新聞">
+            <td>Wed, 08 Jan 2025 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi0wJBVV95cUxNVzlzaE5ULWgwZTlNeWZrU3JuMjI3Wk1ReWhNMlNtRV9XNElQWWI2SXJCQV82OWpodVc2TGdqR2JnNHFWM0xaeDV4eHNXamxXd0I2MzQ5aUhzLUt2NkJLaHQ3TEhtRXBzeTBaZVZYWXg5bjU1UFppWjNrUHNJOXRYb0hrbS1lbHVMclpLNUd1cmJKNWIwUERDZWRRY2g3Z09tdEluY2ZDbno5U19KY0pBUWdEVjV1bW9CQXpva2tVcXJJeTI5REhhSTZVM0g5bERJYUtwd3JZQ2lRMzdjS2NYOWZVNWF2Umo3d0VVelN5enFXZkhYQkR2NU9TWG8wbXM1S19WTVRpUUtfMG1YV0hlcGMwc0l0MGpTMmRndTNFQ3NRdV9HWjBid3FDVS1hc2RNMlFjcnhmMTMzdXZhTWp5UnlrTkpFa0pueVlQUEREZGUtRm8?oc=5" target="_blank">互嗆罷免不如倒閣？徐巧芯提1條件：國民黨像笨蛋嗎 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Fri, 20 Dec 2024 08:00:00 GMT" data-title="經過漫長衝突...江啟臣敲槌宣布「《選罷法》修正案」三讀通過！ - 奇摩新聞">
+            <td>Fri, 20 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi7AJBVV95cUxNamZRSEZqZG9qX2o4U1d4YXhqRWZSMlppSktrc3F2UE5zOEJzRzB6V2hPaHNjcC02dDhGYmN5NnB5ay0zc0dxQjhJb1h5dzE5WkFqOFJ3ODZ2dnZmU25vRWFfM2hXb212Tkp1bTkwaExIajN3OEZSRTRnekt1ZVNoMEtGcnhOY3BILUc2bElqTmx2eEQyUW9QWWZKem1MZ2YwWnIwc2I5RGE5VVVHSTFPR3dxTVZKWDVYckpMRHkyb3JuVVBDbGRIeGxROUdBWGNFVS1sLTBfX3NZQW1jT01vMXdHY2NZMEIzNm5qX2VpSWQweXU0bnF5ekdPQks3aUM1UHRzbUNLRU1fc1lsQldPLVhHMVhyYm4yaFBFc29kMF9QRDN6blhCMGE4dEZSeFVjaUhVNFFmX0ZPMXQzNUt4TWtKNlBzV283WklSZHhheWRpZFYxaEF4czVsSlVQRFFxMkZmS3h5VU10bkFU?oc=5" target="_blank">經過漫長衝突...江啟臣敲槌宣布「《選罷法》修正案」三讀通過！ - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Fri, 28 Jun 2024 07:00:00 GMT" data-title="藍啟動《選罷法》修法提高罷免門檻 柯文哲反對：但連署程序應更嚴謹 - rwnews.tw">
+            <td>Fri, 28 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFBSVDFvRlZIRDhaTGs4WlF5eWxZNk1Hajd1T2FDVjhmWWhDYmRwMEtGS0FHRF9KMGw1aXBySHdtdll4SzVRSHQ0YW1QTmlyZmVvbXc?oc=5" target="_blank">藍啟動《選罷法》修法提高罷免門檻 柯文哲反對：但連署程序應更嚴謹 - rwnews.tw</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 30 Jun 2024 07:00:00 GMT" data-title="柯文哲反對更動罷免門檻 朱立倫曝部分藍委沒要求提高：只希望更嚴謹合理 - rwnews.tw">
+            <td>Sun, 30 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE1IOWdnNzNLZ19pT2t3Njk0QldWN1FwV0x2bC1nT2xpNUZKSWsxWnVqNVdCV3NodjUwb0w3cUFRTzV2T3drVml0NGF0dDRJUjg3Tmc?oc=5" target="_blank">柯文哲反對更動罷免門檻 朱立倫曝部分藍委沒要求提高：只希望更嚴謹合理 - rwnews.tw</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Thu, 27 Jun 2024 07:00:00 GMT" data-title="修正選罷法 朱立倫：現行罷免門檻合理性可討論 | 自由電子報 | LINE TODAY - LINE TODAY">
+            <td>Thu, 27 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE1MOHE2S1BxM2hFbXdjYWMzdlNpU2xEOHRUQkF5ZFItVnZwOW5NVU9nbzhvLVFFdlVqd1Z6Ql90RDYtS0llbWp0OUdtOWlaTWg1S2tLSHNn0gFbQVVfeXFMT1M2Mm5QTHhrSTFPWncxN0lBNFhqYkROT21BaGtReXc0OW12bVp4b3l6Ung1NjhSQ1lwSUZVOGZoM2FkZXhwd3gyaXA1U3N4MkhpbGxEdXJzUGgxMA?oc=5" target="_blank">修正選罷法 朱立倫：現行罷免門檻合理性可討論 | 自由電子報 | LINE TODAY - LINE TODAY</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 30 Jun 2024 07:00:00 GMT" data-title="柯文哲揭很多人不知情就「被連署」 直言罷免淪為政黨仇恨動員手段 - 奇摩新聞">
+            <td>Sun, 30 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipgNBVV95cUxNdlJoS1ota0RiN096bUpQUHhrYU9ZTmo5c2RlZEk5X1ZYTUlrOEFxc0ZRdzFzMkltSk1aeEFUWnA2WjlxUEJia2h3enNVMjBYZVdBR010LXhMeDY0OWpIdVNJZzFseGZKVHVpanJZeTR2UmZ0V0ZiUm5RTmpHbzRkMGdyTVY4T0cwb0QzZU0xenlVNzU1Rlp4bnhMMTlUc0JraVFTU1RzTk9sdzV1ekcwYV9ZNkd0dE5FMVZGa3RBTnBOaWdUSXNOVEVGVUlsMHdWenZINDdaX3NIZjAzeVp2VFZsUy1OSnRGdnI4dU9DUzRfM0ZKWFg0dFhTZWM3cE9HbFZKZTdpSGgwWkNIZjlFVm9qS1lyUG5faTZBaTJoWGVoUkNIajVFTU45cUlxUHMwVGxqbmxrVWRDODlYTC1vX0hIdnY2SWlvRjBmXzlvN3J2cmVic0Fualc5bmhMd3Rna3Z4STFuV1k1TXpsMFBKdjFCZ29QV3Ntd3BMcTJITjhSUDg0eloyQ1ltZ2E1ai1ySk9xdzBhSDdVOVh2bExCbVF3ZDRmQQ?oc=5" target="_blank">柯文哲揭很多人不知情就「被連署」 直言罷免淪為政黨仇恨動員手段 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 30 Jun 2024 07:00:00 GMT" data-title="主張「罷免門檻不要動」 柯文哲爆很多人「被連署」：樁腳拿名冊抄 - 台灣好新聞">
+            <td>Sun, 30 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiugNBVV95cUxPZ0hxY3N0UTZLbHZMQ1hLUDBZai1JVk9Ma1pGNE1aWG4wQjYtbWo5Y1FXblV4QzFSY3d2ek4zalIxMVltaXJCSE4ycXpON3Z1WFQ5ekllNVdFMjFQY3FpVlRIZHo5Ylczc2dZMGtXa0JVbXY2SUNvRDJrUnFfSm5NTnBaS2VDN1Jvd1F1SDYya1FYY1ZQYkZxS0lXUFNpN2hIWWFaaUoxTklvVTNjRXR1T0xQYlZ4TllaZ0VXNWxmcEVYR2x6LTA0UEFOZDR1QVNudG9iREVRQ2RhVjFmMWNBaWlOUVRUWDFBTzJBTEk5Y3dWdXRhWUdUcDBMS29kMkVhZ3NfS0JzXzRhd0ZDVHU0QXBNR3IwY0U3UWNOSEFFZXkxTzBkNExidEY0Zy1UaU0xeUpOUVVON2QzMllmckV4eUtDcHVqMUxWYy1KTU5BRkxQZWtjeGFBTEVDeTROenhwUlJDQmY5SzBQX0tJVHM3MWZHRlNTZXNsVW9IWm13VVlOSUFkUUpOcmlDYjVLSUt5MlNSY2thTXAwT3lFNTM4OHQ3Q01HcEpnX1R3NWZEeHVUeFNHN210bTZB?oc=5" target="_blank">主張「罷免門檻不要動」 柯文哲爆很多人「被連署」：樁腳拿名冊抄 - 台灣好新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Wed, 04 Dec 2024 08:00:00 GMT" data-title="南韓要怎麼彈劾總統下台？ - 經濟日報">
+            <td>Wed, 04 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE5VcUtaMEVDLVZ1UjdlcTFjSi0wZU9ZYlg3N2JYWlhEOEZQcTBuSDEyNkpjT1JuMkNWVXItNEg0VE1TYVFEZWs3WUxSWUtXNFVVZzFOVEtPd0Nrd9IBX0FVX3lxTE1teXBzRGtKSllEbkdWVXc1ZFRlZjYzWERoTTZWMmtZcGUtNjBvbFBSQmRISDZyWFBfSFlNWDVaamFNemZOSFZKbTFMNkRwbWN1Z3VCNjM5YldYLXRGcVVn?oc=5" target="_blank">南韓要怎麼彈劾總統下台？ - 經濟日報</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 30 Jun 2024 07:00:00 GMT" data-title="主張「罷免門檻不要動」 柯文哲爆很多人「被連署」：樁腳拿名冊抄 - 台灣好新聞">
+            <td>Sun, 30 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi9wNBVV95cUxPaHQ2SnU1U281WkEteFFOODkzUDBENzZadk9aU01GeFRhTXpZSFVTY0F6R1hvX3YtX2lGblVPcVFkNmxraks4VElaMVRMOG80bUJkWGFZNFZJamYyMWFiS09Od0l4SHl1LXBqN0V4dTdIVjdmZ2Y1NE02VF9lNjNtdl9KQTlaNTJ3SmYydjg1OU10WDBTbGF4YjRRQktXV0xTSlUyRS01YmFFSjJqZ1NrRi1TdF9yWVdIRS03VGQ2WTNOWm05YVk1c0ttc3d6WW95Q29NeHVzY0NDTXVhblR6dlBPdVJxbzJkMEZyZDhNeVBNMExYWV9iUXF5czA1YXJZWkhMbHo2bWVhbFlXU2tFcFZLZkFSTl9oNjJOaF9wOEczS18xYWRlNTVmZ1FjMTRyTndrbndVQW5oRHRGRXVoeUhGM212eWdyV3pmT2lYTmpCVHJSSnJFbG5zdmZZZlBoc2tMYVk3YVVoMngxcHgtdnlpS3FXMkdMNlpmREZvWU8wLTJqMnhEZnZ3RmcycDZPMExhbTdIOHJmdlN4NnJDNnNHeHoxOUdmN1FlbWp6NlluWW5sdl9hNi1IV2JCSFhXOU9qUzZzU0lsaVdVanpsNE1NdEdHUTBFMnJHX2NZenBlaWdINGJ5OWFJeVE3VVFPM1NEQlRZdw?oc=5" target="_blank">主張「罷免門檻不要動」 柯文哲爆很多人「被連署」：樁腳拿名冊抄 - 台灣好新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sat, 21 Dec 2024 04:16:00 GMT" data-title="立院激烈衝突後通過選罷法、憲訴法、財劃法修正案：罷免連署、大法官違憲裁判門檻提高，中央增釋3千億給地方 - 報導者The Reporter">
+            <td>Sat, 21 Dec 2024 04:16:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxNUDl6dlJ1TzVJanlwZEwtWmV6QlMtaU1LMDlWYnluZnFUSkx0NnQxV0J0ZXJ4S1pXNVNKczF4U0ZoSUZmTUVGckNWSjNYR2xKRUZjcUZOX1lXQ1RlRjl1N1hfRVJNeXh3SGw0bTUwd1ltZHAyZnpCZ1ZFQU1nTktodGpBbjNkbXUzY1JkU0NMODZwY1hmVllZUFdLSWxCb2pqVkZZSklGdllYcHNVQ1B1Nw?oc=5" target="_blank">立院激烈衝突後通過選罷法、憲訴法、財劃法修正案：罷免連署、大法官違憲裁判門檻提高，中央增釋3千億給地方 - 報導者The Reporter</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sat, 29 Jun 2024 07:00:00 GMT" data-title="對選罷法修正表態了 柯文哲：連署應更嚴謹「不動門檻」 - 奇摩新聞">
+            <td>Sat, 29 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi3wJBVV95cUxQS09sMkMtZHR3TGRqUlNoOTVGWmhNalVEczBCZWZXdGZlWVB4X3ZEMlpCa01YVXZMaDE2TjlneTNzMkpNaWIwSGxKeDdGLU5sazRtTlIxaVFicy16VFpNMzJadi1kVWdUR0Yzd3hjZmh2TDRnVE93M05ORTBCd19Zc2xkNHVIdzBYazRlc0I0Q2hQZjdFd05sN3pSODQxSE1fZFJCQW9ET1hFejZkdjI2dlpFWi15Um1uaHVEcGtRajFzOVhvanV3VGF4Y0RuTUk0aFRSOUJtSGRqa19tUUdyeXRHN3JtT0FTY2hhVlJHdk9UV0dsZXp2bE5xNlJxQzhQUDhaZVd4bnJoNjhkX1B3akVlZFlSLXlDSGhuamRTbm1ISFpUenBfbWM5aFhRRzFaa01WbUF4bFpFX2hDZk9QYU50QzY4WmxRZkI3NExCR3dIZTQwWl82VnR2NVVLNm8?oc=5" target="_blank">對選罷法修正表態了 柯文哲：連署應更嚴謹「不動門檻」 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 27 Apr 2025 08:49:00 GMT" data-title="朱立倫喊罷免總統幾乎不可能 全體立委76席連署才成案加半數公民複決 - 奇摩新聞">
+            <td>Sun, 27 Apr 2025 08:49:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivwNBVV95cUxOWkdiVWJtdVpfTDZfZVdjOW4tQjdjT3Z6OTdZOTA0YnpsOTZnQXhBbWQ0WTdERzlOSENFN2ZROVpxcVVoMUFBdHEtTFFGM3B0ZW43cWl2V1JQVzlxTElDN1BOci1LdVpRV3FaTV84U2lBRnZkZE1BTU1kMUM4QnlCQUNWeFU0cm1CVDNUclZsMm5IVzNJMk9SZDZ4QmREYkVEQUZhM0hyb1BjNS1vaF9xbXo0UDJWWGp0N0hNTnozRHJjb1RfMXhzMm5QaFJZM3ZaSzZYeFhkeWdWMmEzMHJuUjNkc2IyTk5IZElGTC1sRFFZS3ZyaGtvYTdHdjdqckJRMVFGVW14R1Brd2lGRUQ1OVJrTmZKYTYzQjg1dnlXenB3YVUweGo5Njd5S0R5OUtCc1d0RlQtWnZHYVI2QlNhLVBfa2pLSFpBWVN4UTNXUkY4Vk1DNkZyN2xjelkwWXJJZ3pxUEZ5em5UQ3ByeFdISDlCWFRMcmlNb2JaVEI5SG9TWkJCT2pUVnBoUWswNEpoRHc3cmFYTzZJX2J3STVMZjBmZjFCOEk3NmZaaHdPVDNxT2RVSDVrUENEOUh5Mjg?oc=5" target="_blank">朱立倫喊罷免總統幾乎不可能 全體立委76席連署才成案加半數公民複決 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 22 Dec 2024 08:00:00 GMT" data-title="罷免門檻限縮民主？ 學者：罷免本非常態| 立院三法案通過| 要聞 | 聯合新聞網 - 聯合新聞網">
+            <td>Sun, 22 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE9RMG5oc1NkZURsZHJzajFUbDEzcU1HVzhxdlFWN3R5aVdJSUJTN3RrYkpZdUNNMlN1V2FOd1dsazhuRVg5eTlhNDlBTEQxd0ZsSjUw?oc=5" target="_blank">罷免門檻限縮民主？ 學者：罷免本非常態| 立院三法案通過| 要聞 | 聯合新聞網 - 聯合新聞網</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Fri, 03 Jan 2025 08:00:00 GMT" data-title="民進黨提變更議程改選立法院長 傅崐萁批打臉賴清德和解說 ｜ 公視新聞網 PNN - 公視新聞網PNN">
+            <td>Fri, 03 Jan 2025 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE5zTUtlajJSUDFFbkxNd29yME9FdTFpQm1zWkdOQ3VTeExmVlB2d0E0Z3NrR0lDZ3pINElOYnNsZUdDVXh6N2hlQ3k3WmgzbHPSAVRBVV95cUxPQWJxaGJ1S3MwdnRDVGhLTHhPVUNVLV9XV1I4TzdqRXhKeXFGLWUzblNqalFvV2lpQUY2M21FNXdfanU2SUNpRWdsN0lJc2pLbWdBLWM?oc=5" target="_blank">民進黨提變更議程改選立法院長 傅崐萁批打臉賴清德和解說 ｜ 公視新聞網 PNN - 公視新聞網PNN</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Tue, 16 Jan 2024 08:00:00 GMT" data-title="國會小知識》立法院長可以被罷免嗎？一文看懂如何選出？職權範圍、歷屆立法院長是誰 - 財訊">
+            <td>Tue, 16 Jan 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMie0FVX3lxTE5qZFZZc3JNSDBOaVBRMGc5NTlIYXdwUE1rSG9oR2JiRmxiQU9GWE5xVFg0WGJrZkpHUUEyTkZaLUNtTGJEX1dPUUR4VGFSSDNJVjBHRFFhSEJFSFJQZFdqUFF6YUtWdzgyUUMwS2F1MFd1TjJmSS1XWDh0UQ?oc=5" target="_blank">國會小知識》立法院長可以被罷免嗎？一文看懂如何選出？職權範圍、歷屆立法院長是誰 - 財訊</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 27 Apr 2025 15:25:17 GMT" data-title="國民黨拋罷免總統論述　綠委：操作虛招 | CTWANT | LINE TODAY - LINE TODAY">
+            <td>Sun, 27 Apr 2025 15:25:17 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE9kR0Y1UnR4U2l1TVRKWTVwQXhFOUV0bDVKOGRlMTJpdWRlTkJFX1BxQnN5TFJGVy1YYkR5LUtaZ0lHa0ZYbnNpZWZpMTFzZEtzTmVBR01R0gFbQVVfeXFMUEo3aW1uYTdrV0F0aUx2amtTRmNmWmIxVW9yT0tmQ0tySnNZb190TWg2bGowd2hfVnd4emN1NjNXLUR1MGdVTHdpcTBKUG5KUC02emhJeWRNcGxRQQ?oc=5" target="_blank">國民黨拋罷免總統論述　綠委：操作虛招 | CTWANT | LINE TODAY - LINE TODAY</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Mon, 28 Apr 2025 04:47:00 GMT" data-title="朱立倫高喊「罷免賴清德」意在催出最大仇恨值 固藍罷綠極限催票 - 信傳媒">
+            <td>Mon, 28 Apr 2025 04:47:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMib0FVX3lxTFAzRWNUSWtfZDU3WVRXdXpTZWJOWHdWNnlLUmNFVkljeGhxQXZNX1kzNnQ3Xzg4SWZDTVlDdDNmTlg2YTdWMHcwNG04eG5nNHg5TVNBbklkQzF0aVItZVAwNUVOaTJtQ1ZfeEV2Zll3QQ?oc=5" target="_blank">朱立倫高喊「罷免賴清德」意在催出最大仇恨值 固藍罷綠極限催票 - 信傳媒</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Mon, 10 Jun 2024 07:00:00 GMT" data-title="政院提覆議「歪樓」倒閣解散國會？媒體人：政治攻防嘴砲而已 - 奇摩新聞">
+            <td>Mon, 10 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi-AJBVV95cUxPeGs2cHdZdjN1Q2Y2N1FoYlh0aTFGR0hZY1FMQXpuMFVNbmhLajI1U0EweUREUzluUHNhd0JKY2VfVmdTMDNtZmk5R3c3UmxadmRtOVFfY1JKZ1pBLTRJU2k4QjFxc1RTZVVfQlJfMnZtN2hrTTBxRHVadmdyR3dQYmxwY1BlMl9XVF9Jb2lHLVEtNURnaUtJNVBaZG1ldEd2RTc0Tk1VdTJ5ZldKS2tiVkFKV0Q1Y195cHNUbWdfOXJYU2pKM3FGaUt2UzkyMTBQOVdnMDJVMnhQWlVNN2JoRTBNUmhkejB2Vm00Mk9mSlF3Sl9xUU5PWHdxS3NqWFdFeThQSWVocGZ2SHRwTTFTMy1vc0FHOFBlczFSOURaT0k3MXpOWTRid2RGRGMxMmZiUmdzSl9qU0x0emozNDU4eHJ2T0JFZ19CbGVvN0hHbTFSc1BCZ29QdFFJNF9hZmEzQy1hQnNJNDhiY2RsYWc0c21IcXVsNzFB?oc=5" target="_blank">政院提覆議「歪樓」倒閣解散國會？媒體人：政治攻防嘴砲而已 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sat, 05 Apr 2025 07:00:00 GMT" data-title="民進黨大罷免，罷了一個笑話！ - 草根影響力新視野">
+            <td>Sat, 05 Apr 2025 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi5wFBVV95cUxQTDFqQmM1MlRHVXJVSlN4NTlYVllTdmJPZFVGUUZEZEFXRzdZUFJ6a2Z2MjU4RkYwZ25xZWIxVWp3VW1qZzUzMHpjYXUxbk5WMXBXajkzUjdNYVppa1B1TV9SNXZNNDBHdUVvLWRjSXA0c3JReGJlMTdyaU1JTWFsbGtKUXN4bWI3MUliNUt4V25tLVZEWXAzall4akUyVHlINVNudmwxdHNsSWV0OHhfbXRmdzlxUGZYWDdtV3V2QTRLNTg4Yno5alRsc29nRERWYUl5ZWJmWXV4U211VzRtRzRkR2pONkk?oc=5" target="_blank">民進黨大罷免，罷了一個笑話！ - 草根影響力新視野</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Fri, 18 Apr 2025 07:00:00 GMT" data-title="蔣萬安喊倒閣、朱立倫嗆罷免賴清德 難度有多高？可行性一次看 - 壹蘋新聞網">
+            <td>Fri, 18 Apr 2025 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxPcUJUSVNUaEZ5R3h3VEFtREpfamJUZTktNllOdjNuMlQyVEcyMmZSRkd2aTY5ZTN0dmpaM05oMjVMRE9MeWN4MTVhbmFlLWdkVl9FWWx6eXRsY3VUaHJMdUVaZ0otdXMtY0lqak0tVDI3UUN2aXMwQkZTWEI4TFNtaQ?oc=5" target="_blank">蔣萬安喊倒閣、朱立倫嗆罷免賴清德 難度有多高？可行性一次看 - 壹蘋新聞網</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Thu, 09 Jan 2025 08:00:00 GMT" data-title="立法院長選舉提名、表決、職權、任期與罷免 重點整理一次看 - 奇摩新聞">
+            <td>Thu, 09 Jan 2025 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMizANBVV95cUxNVnlzQjJPYzRheTlQTmJqUDhHRmVfeWVXTXFTRDZWdkh6aFBodXBEUDgxZUFFUFN1Sm1GSmpvWmlfNEJ1d1h6amY5VldicUJ0R0lWc2MyaDNmWW1FUjR1SlMwdGx3NFBGUDZBS1paWHZ6ZHplQkJWcVdlXzZQeUlJRzhhaThmNlRaSVJSSlRjRS1VaHMtcVZ4Z3ZTTFBQQXFGYm1KaWNrMmNtRUlCbjdWMW1KM2liQVBZSk5lNWlFNEVLWi1icTh2aF9ES3AtSGRKTWNMcFRLNlF3ckhvN09mMmFTb0drODNfblI3OGR6VVBhMGd0aWJKckhrRDVmUmJHSTZwbVFLblJ4by1EUXcxTkoxWmx5ZnZSTzNLX3EyYVFfaE4wZkV1WlRjdzhzaGx3S1VwMl9qenNSd1lEV1BPOGx1d2ZTa1pueWFkQ25XcEtvQWs3czNxZi1zYld0eFBqMy02WnpfX3lKbnBVampQQzZxMDI2NENLNkFxc0o2NENhLWd2azh0eXFqYk1lbWxvdGNvZll1VHVoMTFhWnpBa0J0MUk5VjFCeHFPd2V6THFRUTgzNkpwQ3FQSWV2T2pCMHZCYUJIZXNMSWpP?oc=5" target="_blank">立法院長選舉提名、表決、職權、任期與罷免 重點整理一次看 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 12 Apr 2020 07:00:00 GMT" data-title="真的假的？罷免制度不是多數民主國家的常態？ - 報導者The Reporter">
+            <td>Sun, 12 Apr 2020 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiXkFVX3lxTE5jWXRjYnpqMzdMN3hnQmhqOFJLUU9IYU04UUREODNQMUJ0Y1RyRFBLLWVCd3Jvb3BtVlRYakhGczVidjBJRkVaZjR2NXdIMzc0QzRtZFlhSkk2SWRieXc?oc=5" target="_blank">真的假的？罷免制度不是多數民主國家的常態？ - 報導者The Reporter</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Mon, 15 Jun 2020 07:00:00 GMT" data-title="「民主國家很少在罷免」是真的嗎？美國一年超過200場罷免，連阿諾也靠補位當上州長？｜城市冷知識#22 - 未來城市＠天下">
+            <td>Mon, 15 Jun 2020 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE5KTDNPTFZET0tJVDh6SlJ0Mmdad1ozTWVscjR2UXBSSE1kSEdKc3kzNi1HN3NSMEx6N2I5VGFzMDNPcFNmbms1Q1B2Y29sV3JJOUpN?oc=5" target="_blank">「民主國家很少在罷免」是真的嗎？美國一年超過200場罷免，連阿諾也靠補位當上州長？｜城市冷知識#22 - 未來城市＠天下</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sat, 25 Jan 2025 08:00:00 GMT" data-title="藍綠同步發動罷免 綠委：可以合作倒閣讓總統解散國會 - chinatimes.com">
+            <td>Sat, 25 Jan 2025 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE45OWphNGthUE9fVjMzSDg2d1JvRFU1Sml0bDNzajY2VFdhYmVMeTlSS1ltdF9BeUNsYXJ2S2xjQVd1eXlfQ1hrVHF1YkZ4NU1qTTQ5b1dGTHpYU1Q0ZTJxTU83LXlKd3k3OE9qMHNR?oc=5" target="_blank">藍綠同步發動罷免 綠委：可以合作倒閣讓總統解散國會 - chinatimes.com</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sat, 07 Dec 2024 08:00:00 GMT" data-title="戒嚴點燃2518名韓星連署罷免尹錫悅 名單驚見奉俊昊、孫藝真、全智賢 - 奇摩新聞">
+            <td>Sat, 07 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMioANBVV95cUxOdHZvT0ZieUVBc1JRQXJyN0Rud3hfV21jLTBRX01ORkR6VzhHQnZZNkhONDV3cXViem0tZkdTUEtuS0xNV1BfaXZlcmw2WmNjOVF1OHRWa1YxWlRfdGR2Mkl0T2pWSnI3N2NLam82dWlYSmFwWEN1VTdpdWZVM3FlTjM3OHl1Q09iVUJLa0JHMm5XNmJkVmJXRFczRV9nbDNjbUhGSlJ5U0JQdDl3cXNxR0FUZzdXUkJwRWYyeW5lTVpJOEkxOXNjWndjaFBBdjl6ZHBibGFvUHBoaElTSWJOYTRqbFhSbVhPZkNNQlk2aDRXZXg4RllaNFZJWjJhdEFPSThhdjBNSmF0RUZwbExVdnktencxZ3pVcU02R3dhQzF4bVZaUzV1Tl9RdGdoQlNrRkRFLVZkNDdpcVAwcThNZTQweDI2U2lWT1E5SlZzN1hVMzk2NGg4Ry12Zl9HOWNUZGk4U0RCVjVVQ29Oa0dzODY5ZW9nV3poY0VORmZhOHd3MzljZ1hGLVhZUFpnZFVKaktyclNxZnFON2tPUVN2LQ?oc=5" target="_blank">戒嚴點燃2518名韓星連署罷免尹錫悅 名單驚見奉俊昊、孫藝真、全智賢 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Tue, 09 Jul 2024 07:00:00 GMT" data-title="新聞透視》立院火併藍欲化解大罷免壓力- 政治要聞- 中國時報 - chinatimes.com">
+            <td>Tue, 09 Jul 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE5aampZUzQ5MWRBajdrSUNDMWxxclNPZ1RvdzJ1bkJob2pNWmpkSTd4eWxwTkpWZnJucUpqLVROLUM4OGZtZDRjQzM5b2c1RDBrSzduSDRNYk5PQndZb2t4RThVY2xFTjNGbWp3?oc=5" target="_blank">新聞透視》立院火併藍欲化解大罷免壓力- 政治要聞- 中國時報 - chinatimes.com</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Fri, 20 Dec 2024 08:00:00 GMT" data-title="連署罷免將要求附身分證影本　《選罷法》修正通過違者恐挨罰百萬 | 政治 | CTWANT - CTWANT">
+            <td>Fri, 20 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE5GbElzV3dzZTE4NWdPb2d5Rl9WYUxEVURFRHEzdWozanFIQ0hndFppbVhMemZzYjVrczg1N0xZSkQyRDlYaF9venQzcE4zX1XSAVRBVV95cUxQSXZnd1EyVVBWQnIzaFpIbmVJMjZUN0MyLWI0YjNxLU5WMTM1eHNsMHFuVEx0ZEZuQzlZTVB5VkRTRE9tSUNQRHRKaVlkODFVb1c3ZV8?oc=5" target="_blank">連署罷免將要求附身分證影本　《選罷法》修正通過違者恐挨罰百萬 | 政治 | CTWANT - CTWANT</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Tue, 17 Oct 2023 07:00:00 GMT" data-title="2024選舉知識懶人包｜總統連署門檻要多少人？參加總統連署要帶什麼？法律怎麼規定？ - 奇摩新聞">
+            <td>Tue, 17 Oct 2023 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi2ANBVV95cUxPUWFEcHVzbDNWVkMxdjdaOFFpQjRTVUQwX1RVbGRSaFRJb0xqQ1R0Zk1LYTVrS1hNNnZTeHdkLXVVeE92a1FycGNxR1h6cG41NDFBajhHRHlKZkkybVJYTm5VR1FXQlB5a0FTd0xYQ1YweUltRWhwcnRleXBvNklTc09sVnhCQ01EWmJqcHE1M0tUVG9kdjNLbTJIWGNLQ2o2dURWaVdRZE10b2QtcWlYSV81QmdiakNxSG5UcU8wLWFMN2U3NHRwTkVZaEsyNVFJbjRKODk0VDJkVEpUeWhXZ3Y5LWJQMVVIbW5iWWZYWlRXcWlpLWZySXhfcWxUdkhlS0ZrNURRVDRKWkdQeUlnR3dOeXF5ZDBqNmZZN0doZTBIS1BIdWVuX3RSb3pvT19CdmpyT2M1U25ZVnJ3WW5wellUejdWWVl6aGstd2VzNDlZWEFMMXNJZ090aVI5TW81VmtXX1I3RXA4ZDJzTWw4aWFkazdHbkZ1WXplQ0R1eWlTLVpWWTZjQ1BBN0tvbGkxV1J5UnJibHR0WHpBd0tGVjNBQ09xRmMyU251a1lldXR3Z3IxRXpCcXVEMjducmotd0FhdUtQM25SaWtYbTlxdFhaQ3hfYkd5?oc=5" target="_blank">2024選舉知識懶人包｜總統連署門檻要多少人？參加總統連署要帶什麼？法律怎麼規定？ - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Mon, 11 Jan 2021 04:22:28 GMT" data-title="解析》一文看懂：美國國會如何「彈劾總統」，如何才能夠「將總統免職」 - 風傳媒">
+            <td>Mon, 11 Jan 2021 04:22:28 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiTEFVX3lxTFBiT2gzOUtBWDUzeDNtZW9tbXJMZUd3aGEtSVRxZlgzb1pXRDhFb2N6Nl9nZUU5dXRxZnhrYjNmNTJsUXVRZ0JES2lsUHo?oc=5" target="_blank">解析》一文看懂：美國國會如何「彈劾總統」，如何才能夠「將總統免職」 - 風傳媒</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 24 Oct 2021 07:00:00 GMT" data-title="罷免門檻低？ 學者：造成政治不安定 - 台視新聞網">
+            <td>Sun, 24 Oct 2021 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTE5Fd1RkWEE0M2tFU1dQWmo1dkVtMG15ZVdsQ3Flbmp5Wi14eS1yLUJ4djNnMUVfYU9iMVRCUV9NV3U4dC1BSmdNbTJHOVNTLThuWklSYWxHUQ?oc=5" target="_blank">罷免門檻低？ 學者：造成政治不安定 - 台視新聞網</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Mon, 27 May 2024 07:00:00 GMT" data-title="立委罷免潮將起？黃國昌揭條件：這是常識 - 奇摩新聞">
+            <td>Mon, 27 May 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiogJBVV95cUxOekJFa0ExMVV0TUYzRm43bF8tQTZ3TDRtcEd4Vk45U2xpQmE5ekFhaldsMFZJSmNLaldoaVVuU1FSc3hHZXJlTFJhU3h2WUh2WUN3My04QlBCZ2huOXVIRGxSVFV1bENUemRiWXF1clo5OG9LRkRjYk1OVldqdkZmV3pXLVBsVWhNVlpSZTVpU1cwSFV4UnpZNEdCNUJacUQ2cnYxQk90R3Jnc1p6SEVPTG91Q1hIdnFfdjI4LTk3MlhjaG1pY2ZEZWxMaVlkVnNlcWdfeXZqSFpRaW9SZ29CTTJFcEg3cS1xcjdIcG1wM2NRZUw2WEJoU0ZlRDVEUUxsbm5xb1gxQUVscU81QV9ZSEpoeENUamdGanZlT3JaZjEyQQ?oc=5" target="_blank">立委罷免潮將起？黃國昌揭條件：這是常識 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Thu, 11 Jul 2024 07:00:00 GMT" data-title="示警賴清德將發動對藍委大罷免 蕭旭岑：屆時民眾黨態度也會翻轉 - 奇摩新聞">
+            <td>Thu, 11 Jul 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipgNBVV95cUxPQ0xjNkNscG8tbEc3WEdGNGsxUWFOeUp5WG1QMEVMRWs4MFdLVG5EOEViSVVra0ZiSnNqeW5remIxenNrdmptZWlzWnhYeUlmUlEzUGRlWTRMbURTVkJpeFZnM04wNllJOEF6SWJONWZsbi1SV2JZbkFQMkZ3RVR6UUUxaEZSTWxtYlpsOFNKUjd5Z09DbF9QdUh6OGtRSVJRX3JSSUw4RElSTnhvektlOGN5X0Zfd040SjUzUnc4Tlkya19hNzdsdUZJeWV6YVBpYTlVbFVobmdkYnVVQkdWVnpIb3VKdVdZdGtCNm82cHZTVEdBYTR0S1pkMnBsSndtaVZ6SWV0SGh3YnlpeXJxdzlEMWNUNlhsUFJFV3JNREZ1X09QQXAxdW1EZEFubGRlVGV6d1hGWG5VNmR1UFNoTEM5N2xtMldnb0dqNDlvMnZiYWdNeWtiTzhyUEFvZi1ZOFg1X3JOYWpPNmQtYWFvLVdJbFp5WlQwRTBVdHVYMldyczI0ZG1vNDcxUGphLS0xWWtkNUdkNWcwcVoydlR3SzFaRTJMdw?oc=5" target="_blank">示警賴清德將發動對藍委大罷免 蕭旭岑：屆時民眾黨態度也會翻轉 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Thu, 18 Jan 2024 08:00:00 GMT" data-title="懷疑作票就能要求驗票嗎？驗票門檻、保證金法律規定一次了解 - 奇摩新聞">
+            <td>Thu, 18 Jan 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMirwRBVV95cUxOZEJjdElPVWVDWGc1YS0tRGRjMktOVUZjTUEyWFR0ZUdsQU1tRlhWN2p2MXE0bDVMOEVWeG44aXhuRlRrcTE4WUJTa1QzODlMZE9FYlA3SjR6TVlVRVhhR1A0QnZnS1FfazlCbWF3Y09sdXJjeC0tdm51SGhHR0VkTFNzem9ZQzBDQ3BtWElKRG1CRzE5dUNLMk1UOFF3N0R5MTJWakhFLUdFSkZfYW9GalA3U2ZmLXFHbm1YdnoxU1FoeUgxMUlyaThwbVNiLU05M2s2Vzd1dVVOSWpzZnNhV09DTlJfNGhSUm0zVVZ5UjJZNC1iQ2lCSnROTFQ0M21EYThXYWNrRnRoNkZRYUVlMWdESnBDcV9QM1FKd29jZUU1c293MFBQTEFQMDZRMlNPTWRTOUVqQnQzT2xPYXVmNVJzMGVMTXZMUElHaDdLU1lyUGRpQkViRHJySnA0NWdaczJLaDhkM0NJWUNUa2loTkhLVkZuQlhTVHRidS0zamUyV0pxbGRxNTJ3ZFVhZXU1ZzUwc0ktS3FrRnd1YktEMDhIZENBZU1IOW56RGJDaHJVbTlraUdhTGszTjBRRVlsV2NaY1BrWGxYXzdTaE4zd0pmZzdJbVdhc3B4X3B2Q3Z5Wjd1WmNyQ2V3LVo0VHhSNXdKNnROTkIxZlJ0eGJnWUlNVHAyUVFldFVWUDZjSFIxLTVNV3RQdXFBVDRkTzRzSVdxNTQ3cFFzYmlqdmhv?oc=5" target="_blank">懷疑作票就能要求驗票嗎？驗票門檻、保證金法律規定一次了解 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 09 Jan 2022 08:00:00 GMT" data-title="罷昶失敗！近年政治人物罷免案一覽表 - 奇摩新聞">
+            <td>Sun, 09 Jan 2022 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiigJBVV95cUxQLVBUZUM4WVpIRWc3T0pLOEF5UzFVT2FuYVFac0o0eTBiR1RoMkF6VXhmSDBjNVhfeU1KTmQ2V1JMQkhaWmM2MUVOczB0OGJyam02eG1WejJjeElnVS1DZE1FdWt3RWE1QThlVndvY1FZeVBHc3U5Q04yTGluWVJqbmxzZEFtZGdvOWNoX2JMNldraFY1RlcwaFotci1pZEg0NV9MOVA3M2hCMXJ4Q0VPY09pMUJHMTJ0UUxWNXhHOURpRjllWlVaWU1sU2NmdnVUZlVhV004cWxHcy1Ca2pvSnBld1pmeVRNc1ZzdUpfNnRodE9XUFN1OTkzTXdKY3FfN1g3V1RtVUJEdw?oc=5" target="_blank">罷昶失敗！近年政治人物罷免案一覽表 - 奇摩新聞</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Tue, 09 Jun 2020 07:00:00 GMT" data-title="罷免議員比立委難？罷免議員過關門檻為當選票數的5倍 | 太報 | LINE TODAY - LINE TODAY">
+            <td>Tue, 09 Jun 2020 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiVEFVX3lxTE5Kc0NEcWJFa3IxMF9JVkRzM3hkSUllYXdvN1dTWmNJaTlkLURFS2dOWlJkUTBqOUxZVmpUZXhBSUhqNHQyN295d0tCd3Mtb0o3SVc1M9IBWkFVX3lxTE9iM2JSRVFrUmx5ZUlCVjZiSVAyYWVHS0pzMGJJR3cyZU1hWk9mLWFCdnEyekxscHdZdFlZanM2dmtFejl2MXpQR05aRzc2eDRKNlJFVE9xWjhlUQ?oc=5" target="_blank">罷免議員比立委難？罷免議員過關門檻為當選票數的5倍 | 太報 | LINE TODAY - LINE TODAY</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Mon, 18 Oct 2010 07:00:00 GMT" data-title="厄瓜多：公民試圖罷免總統拉斐爾·科雷亞 - Global Voices">
+            <td>Mon, 18 Oct 2010 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE5DTHJDVVV3QkU5M1p3VnBUWFNROTJEQUJEeEtWbDFRR1ZGdFkxS2UwTEItTUM5cmxEdkg0M09zVnZYd01OS2JQUWlwcFNqbXp2V0V3RWpNQ3Q?oc=5" target="_blank">厄瓜多：公民試圖罷免總統拉斐爾·科雷亞 - Global Voices</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Wed, 18 Dec 2024 08:00:00 GMT" data-title="藍營週五強推3惡法 黃暐瀚：想沒收罷免？三思！ - 自由時報">
+            <td>Wed, 18 Dec 2024 08:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTFBmbkVKWjVrd3JKaVFTS3FFYXZjT0xfUGpLb1FYUHp2bFN4VGZJNzQ0N2dJMWE1WDNQZG9aek9VNFQ4dDdoRFhmbC1YUDJFRGRQSlUzZ19OUGlRbG1mWkc1Um9hUFFxSG1RWnfSAW9BVV95cUxPMEZyT1pIQTlYSkhFMU5hTlRiZms5NW8tRU1HWXhwWlFjV0g1bmNRYTZSV1N6RFRJZG9wakpBRUlGV1l6OGhVRmxUQUVmTnpZRlBaX3g5ckt6RzZxM253YmFGZGRKVW51YmRpUjJHN0k?oc=5" target="_blank">藍營週五強推3惡法 黃暐瀚：想沒收罷免？三思！ - 自由時報</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Fri, 28 Jun 2024 07:00:00 GMT" data-title="修正選罷法 朱立倫：現行罷免門檻合理性可討論 - 自由時報">
+            <td>Fri, 28 Jun 2024 07:00:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE9LcjA1NHpwWm1YcUNOc3hGVDI2YzdKRnk2dmRWVDd1ZXRDSHY5cWhaSDU2U1JLbUtxM0x2TlE0bllGdGlMXzJHODJZS0NKYWZlOGktYmpXWFBlRDZUdld6MUJjd0dNeExPSVHSAW9BVV95cUxPSUtmYmo0TUppVDhiMDlpeXkxN1NlTFJ6VHpzN1V4bEpvRFYzcVpsckFKVDFzanZmaGl3U0VKZVNRM2FsMGVyZkFHLVpSNnh1Uk5HOGc0RXRacU10SkVYVG1OcnVXUnU4WWNUSGR6S3M?oc=5" target="_blank">修正選罷法 朱立倫：現行罷免門檻合理性可討論 - 自由時報</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Sun, 27 Apr 2025 10:20:00 GMT" data-title="朱喊「罷免賴清德」 門檻高綠委直呼「不可能任務」 - 華視新聞網">
+            <td>Sun, 27 Apr 2025 10:20:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMickFVX3lxTE5MQnRuRXpXOEthWmxvcWNQODE3bzNYS2x6UV8tODEwaGFwenZ6c3NOdEZySnMzdVNybW1iOWVQU1JYT0s1TE1fM1Z4eTBMLXRCYndsaE5ISXBxSUwyVGRaZENETmFpTmdVUXBQZVFhTDE4Zw?oc=5" target="_blank">朱喊「罷免賴清德」 門檻高綠委直呼「不可能任務」 - 華視新聞網</a></td>
+        </tr><tr class="" data-source="DPwlTrZS19VcFhcDRstR12Kn7tgs0J2bJSypoWC3goI" data-date="Wed, 23 Apr 2025 14:40:00 GMT" data-title="國民黨罷免之戰各懷鬼胎？他預言「只要1條件」蔣萬安總統之路就還在 - 三立新聞網SETN.com">
+            <td>Wed, 23 Apr 2025 14:40:00 GMT</td>
+            <td>GNews 總統罷免條件</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTFBYQlRZOHVQcEwyR0FMX1dvQjVTQV9nNVpjRWVhdC1FeF9mczlVNWlobGhlZ1VvUENRcE9VRW41NzBfUWtaaEs5ejROV2thVlR6bjZmWkpSMUXSAV9BVV95cUxNSWNCVTdjN25BSFZwN295R191eGxVbHJqZE1pLTF2aGw3RjZ0ZUl1cHo2UjdBTTd4bFlhU3BPdHNTTjI4VFFIWG53QWg0NGw2blBSaExVOXByRkdhZVNpNA?oc=5" target="_blank">國民黨罷免之戰各懷鬼胎？他預言「只要1條件」蔣萬安總統之路就還在 - 三立新聞網SETN.com</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 28 Apr 2025 02:05:34 GMT" data-title="Taihan Cable & Solution Debuts 525kV Submarine Cable Prototype at IPF 2025 in Virginia - Businesskorea">
+            <td>Mon, 28 Apr 2025 02:05:34 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMidEFVX3lxTE5OQlNKN3hTVkFCYmoxUlhRVTVJRmFGSWk0XzJSNFJLTERPX1hXUUJzbmZ4aXE2akgwR2VYaV9KQWJrT2tSWWo3bVFuZnVkVnh3OFY1RzhRaHVldkVmMHNsbmRPOEMyNXJWOER2aUtoOXUzQjUx?oc=5" target="_blank">Taihan Cable & Solution Debuts 525kV Submarine Cable Prototype at IPF 2025 in Virginia - Businesskorea</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 04 Apr 2025 07:00:00 GMT" data-title="China’s Underwater Power Play: The PRC’s New Subsea Cable-Cutting Ship Spooks International Security Experts - CSIS | Center for Strategic and International Studies">
+            <td>Fri, 04 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxPeHVwSlF0dEhzeXZCNm91TDBuQmZJYUxvTkd5RnRuMGVBNm1kWUVDWmUyQzZ2cThRQWZHVjJpNGJrdjhoQmZCbzV5UGZTbFZ5LVJjdEtvaENuNGpnbzlrWWdwVDhVLWN6VG1wZE0zX21abTVqbUdRY3JMa0pVS3FNcDF1cXg3dTN1SEJleTZSS2daQ3h0cG9DWjBNcDZEb1dWYnRCWFJZUVBWQWQxYV9NSlNXRGU?oc=5" target="_blank">China’s Underwater Power Play: The PRC’s New Subsea Cable-Cutting Ship Spooks International Security Experts - CSIS | Center for Strategic and International Studies</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 25 Apr 2025 14:01:44 GMT" data-title="Djibouti positions itself as East Africa’s digital gateway through submarine cable investments - Techpoint Africa">
+            <td>Fri, 25 Apr 2025 14:01:44 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMidkFVX3lxTE1INlFvZXlMZEdwUHN1QmN1aVkySEdHbk9kN0F0Nk5NZnpCS1BvNUlNaTRqLW5IbkRTSjJ2ZWNwVjZrdzhiSTVlM1p1bTNOTVJaSGV3ZVlxeWo1aVlKWXQxMWg3RGdNYXBIRjM5OFRrbVp3elRmT0E?oc=5" target="_blank">Djibouti positions itself as East Africa’s digital gateway through submarine cable investments - Techpoint Africa</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 28 Apr 2025 06:01:02 GMT" data-title="LS Marine Solution Secures $15.8 Million Undersea Cable Contract for Taiwan Offshore Wind Farm - Korea IT Times">
+            <td>Mon, 28 Apr 2025 06:01:02 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMicEFVX3lxTE5zMzlvU2didE0wakE0VUcyRkt4bHY5VU9KRVp1RnhlNHU3dTZtZ3BaVXJ1Y19qSl9KcmlETHFqM1VmSC00bmVfR1VmN3MzLVhqXzdqbG1Ed2c4elVkc3NGQ3JNeHJNUmNrSF9WSWQtVWk?oc=5" target="_blank">LS Marine Solution Secures $15.8 Million Undersea Cable Contract for Taiwan Offshore Wind Farm - Korea IT Times</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 21 Mar 2025 07:00:00 GMT" data-title="A New Era of Undersea Conflict Is Here - Foreign Policy">
+            <td>Fri, 21 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxNVHY2a1kxcGFmUHVSVHlmMFRQSW5LdGRnYzhIclRPZkdmZWR0ZVpWcHpVRVBMNzBOLU03SlRrbk00QjhzZ1BmVmhlR3pFbnlxQlRsR2RXWEM3ZUJXRXNZTzlZUTU2YjRYNVZFUEd0dWl3UlFQQThSX2N4REVpUUNLLTl3akoyNVV2eVlVM3JfaC1ELWc?oc=5" target="_blank">A New Era of Undersea Conflict Is Here - Foreign Policy</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 15 Apr 2025 07:00:00 GMT" data-title="A Third Undersea Cable To Power Nantucket May Be Needed Much Sooner Than Originally Thought - Nantucket Current">
+            <td>Tue, 15 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivAFBVV95cUxOWkhiWDBBUlRSSThFVU91VGRFeTRjSUgxNGRLV3NVRXdJd3JSQkhNWnhfUXhKQjVUbGY1Wlk0aDVUV1ZyMkFhUWJyUDFSVW5TNDcxZ25FSG9yMVlDS3ExWVJyUGdQTEtKY29kRnpidnBtQmwxV0VNRnFhQ2k2NVZINkRHeUVWYVFQTURCM25kRFJJZHgxZjBVeVVRRzRfMlNxR043LS1HYW9Pb1hLN1ExZFFQNDlfYmpUejRrQw?oc=5" target="_blank">A Third Undersea Cable To Power Nantucket May Be Needed Much Sooner Than Originally Thought - Nantucket Current</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 23 Apr 2025 16:00:00 GMT" data-title="Streamline undersea cable applications: TWNIC chair - Taipei Times">
+            <td>Wed, 23 Apr 2025 16:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiekFVX3lxTE9SMXJmTFJBUURuOXR0Rm5LbklDendzeVFZVnh6N2tYUnN6UTJyeW5PSldrTEF6VS1pNlNpNUdYVEpFblJkT0ZrRjJqZU9GckJzakh3eU5JUkVxQWY4V0V4eE9UdHpzZnUyTjUxeDg0QmhXYi13aDRiUzRR?oc=5" target="_blank">Streamline undersea cable applications: TWNIC chair - Taipei Times</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 16 Dec 2024 08:00:00 GMT" data-title="FCC Proposes Sweeping Changes to Submarine Cable Licensing Rules - Wiley Rein">
+            <td>Mon, 16 Dec 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMilwFBVV95cUxNNjJYQjdGMEFnT082bWdpdWJYT2NfdF9SS3J3ZGdnbi0wd01pU1RrU3gyd1VPS3pCMjBZLUF3cUZMNmE1ZG9wZWp1bGM2TUVOczFXQXJzUXlZVEZnbWVfb3RYZGNLaEsxWVBocEJtNFJSVnFwZVh4bVdqS3oyRzlvVWhYejFrUmM1bzFGNEg0UTl6RWRkQmc4?oc=5" target="_blank">FCC Proposes Sweeping Changes to Submarine Cable Licensing Rules - Wiley Rein</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 11 Apr 2025 07:00:00 GMT" data-title="Comms consortium calls for greater vigilance on subsea cable security - Computer Weekly">
+            <td>Fri, 11 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxNRUkyMGQzNEw5Z3MyNl84MHNxQkkxSE9QNnp4ZlJscHVhMXZkLUNyNXpqWnFiTHdyNVNtMVRKd2ZTWmpEWmJWXzBvWlYxcW03RVQzV0l1Z3g0YzNYUjktSEF3MnNKdHRCWFpYTkdvNlo4aXJSeDV6OGNPU0NFOGhpbXZIZG84SmFhSW9Ba29tLVJCNDZnc0RVVGxURXhMNjNGMndWMnNyVkU0QXpmLUJlYkw1bUJlQQ?oc=5" target="_blank">Comms consortium calls for greater vigilance on subsea cable security - Computer Weekly</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 23 Apr 2025 09:34:00 GMT" data-title="Taiwan urged to streamline undersea cable permits - Focus Taiwan">
+            <td>Wed, 23 Apr 2025 09:34:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTE9EQW9Bd2pOcERkb1RoZDZMZEhHamprSHVnTWVzdDhVbXJZR3B6VFVyRjR5MzV6N0R4MkJ0eFd1YlFVcnJIQzRNNkZMX3YtVkU5b1ZEd0Fhdw?oc=5" target="_blank">Taiwan urged to streamline undersea cable permits - Focus Taiwan</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 19 Mar 2025 07:00:00 GMT" data-title="Countering China’s Subsea Cable Sabotage - Global Taiwan Institute">
+            <td>Wed, 19 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMifkFVX3lxTFBrSnNnb3FiMlVGZXRrLXNGYlEydFBXeEZSbHJkY29uVVJlUGVJOEdSNEZOMHg1Sno4R0F4OS0yQlVqN0tsdVp3SzZTTXJnNXUyYnhYMnF4eGN5aGNOVnFsWnZmTzdBLUtPLWZ6UlV2OFhRa0Z5TGptWXFUX1BJZw?oc=5" target="_blank">Countering China’s Subsea Cable Sabotage - Global Taiwan Institute</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 17 Feb 2025 08:00:00 GMT" data-title="Meta plans to link US and India with world’s longest undersea cable project - The Guardian">
+            <td>Mon, 17 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxQQVNCVWFZd0k3OHEyblJON0JRVmdaVVk4akx3U1dXZjBmRkZHa2FOdTEwVkpXZWZSODVlYWZUMmRCQURENXZqYVZ2VVc4YnV2VEFxWU1nSW1FcUZtN28zM1RDbWp5WUtzLUE0cjd4QllhMFBxMVlTLTQ2MVBKTl9DTkN2SzBqYVRndjlKTm9aYW1LbXhkclBlVzgxdWw5bEFqWGdTZGROTG9reW1sT1UzNXpfUnV4dGZMNFE?oc=5" target="_blank">Meta plans to link US and India with world’s longest undersea cable project - The Guardian</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 23 Apr 2025 13:32:00 GMT" data-title="6,000 miles longer than Earth’s circumference, this colossal project will see the U.S. break the record for the longest undersea cable in human history. - Farmingdale Observer">
+            <td>Wed, 23 Apr 2025 13:32:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinAJBVV95cUxNMDhTY3FXUE5QeXRhQWROZVNqTHlSY2FPVHNZQ2FwNWlXZmg5NTlXTWVFaEVEUjNKS2RCVVBzV2FGZ01vbVhxd3YyRWRNM3F2Vk01NWhiT0RkVmJYMEZmTnR6X2ROdmtnSm9sV1JLZHVRT3dvdlZtenk1Z1VXMjBhQTJyZFRUYkVsUHUwUWxrZElrTjY2TFFzaHI3aS1XSGNmcDFUX0IyaEw1dDRMSUdLYVNGQkxza3ktdEdySDN0Tll0b2NLUFJ2NDhiRl93cGRpR3p2RDRBMHhMWXk2ZWN1Nk9zWlVkUHFPc3dSZGJiX04tUVd3V29JbnJHc3pFSmY1aUdRMk5iTzU1NENWOGItS0N0UjhDZW8taG5sVQ?oc=5" target="_blank">6,000 miles longer than Earth’s circumference, this colossal project will see the U.S. break the record for the longest undersea cable in human history. - Farmingdale Observer</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 14 Feb 2025 08:00:00 GMT" data-title="Unlocking global AI potential with next-generation subsea infrastructure - Engineering at Meta">
+            <td>Fri, 14 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxPajRxc3dmZF90MnU4ZjRsallnTmlnaFJIRXF5bml6MFUydzBvblc5SG5jRi1lTURPQUtXWXZBSnViS2txOV9ld3ZRU2NIbEkyNWwxRjJrSXlWV1Vpa2c5by1hUnFBbGI1UFNocDBGMEtCemtXRVZOTDh2OW9RMFZOZzN4c2lrNl9YLTZSS281OWU2NkdwVmpCbEhCMA?oc=5" target="_blank">Unlocking global AI potential with next-generation subsea infrastructure - Engineering at Meta</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 14 Mar 2025 07:00:00 GMT" data-title="FCC proposes new cybersecurity mandates for submarine cable operators in major rule review, seeks public input - Industrial Cyber">
+            <td>Fri, 14 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMigwJBVV95cUxOdVd4cnhYd2NKZ2w4NjVfbHI1RmM4VTdXeWMyb1lTUjRCQVgtcUV6a29JYllUNWtlcmV6UU0wWXJ2UlJUMGdIRElqLVg1VFBENVJDX3c0WG5Ic2NaaU9lRWNUOFpMUk11TmYzeGtnTTlDTFZ6c2FMRUQ1amlrbzEtemlRRGFlV0I3QnNzZlU4aExsYVp4djZwMHo4MXFjejVJang3RFY2Tkp3eTA4bW5oY2xobEVzamNPVDRYODFocllWY0FJSzZjWm1PQzNnZGV0ZHV1Xy1yLTRVRlo4bXFyZU1CUUF2eVFaOW5iZUR1M1RWamZ0a2Y2RGRvTXRSNUNEb1M0?oc=5" target="_blank">FCC proposes new cybersecurity mandates for submarine cable operators in major rule review, seeks public input - Industrial Cyber</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 11 Apr 2025 07:00:00 GMT" data-title="Taiwan charges captain of China-linked ship with damaging subsea cable - Al Jazeera">
+            <td>Fri, 11 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxPMjI3eE9lamZPOVlxbzhUakdBcVRwcEdUUnJfWXF1VTIxZDFxaVJkZXlxOE9mZXVOR2hIVzFwMm1Qa2RsdnpoRXBid1lvTVk4cndrRE5xSUFmejRweWN5UXhwXzN4Rkxlc19WU29NU3hna2QzZEN2QTEwWFNlMm9HSUlBSVlhTGdVYVJvNDd5R2JMT2V6cHNoM2VRTDlfbWlPb1diaC15TktkdHRnUU0xONIBtgFBVV95cUxQczRfVW05SHowZFQ1bnhwY2NfN0RDel80TkEtTG1xUmtPSnBVRFNheE9aLUdLVjBDTVg1ZXN6NFlQZ2t2MUlfek1XLTF5STNnY1hEeTZmVzd5UnRhNlNPZ2I5WUFubjdST2lCQ0R0M0JLTHM3VFJFbFp3VHZDTlRIQWNOX1FLeXlacXh5QUpnQlZLaHlQeDBBUXJGaUpXd1ppd3NpTFBlak5zRExGRUV4N04wLXBoUQ?oc=5" target="_blank">Taiwan charges captain of China-linked ship with damaging subsea cable - Al Jazeera</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 19 Feb 2025 08:00:00 GMT" data-title="Meta Will Build the World’s Longest Undersea Cable - WIRED">
+            <td>Wed, 19 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMigwFBVV95cUxQTUExN0JDMHZaVUkxOVJoUVlfM3JBRUFZaHJTZTVxTG40dVJsMnhxOW1HeDR1RGlOclVUUjBseFk3WUVyQTdEQUZ1N3dHRHAwanNkSU1LQkRvMFg1bHJBUTB1WjgzckVEanZuTFVmRmI1RjJYZkxLZ2tDSmdaLWhlMENqNA?oc=5" target="_blank">Meta Will Build the World’s Longest Undersea Cable - WIRED</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 15 Apr 2025 07:00:00 GMT" data-title="Subsea Cable Market Expands as AI, Geopolitics Reshape Global Networks - Data Center Knowledge">
+            <td>Tue, 15 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiugFBVV95cUxPclFZMVNESGpBZEtYRENKRmE5bXNfMFhZbGRDcEkzZGU2M3oxSTh4N1psQ3FJOWNSVU1OV2xPVy0wMVVmNWd1NUNENzVCTFVIeUlLZXRIaDJDaHM0bnBCTTJNYjJ5aUhybVIyeGVHVWlHWC1sTkVVUWlIVHdGbTQ1ZWhpc0JGRV8zM0NHZFdNaTAzQ2hIazJfMEFKQWUxTmJMMllWMlN5OXRxeUNnN3NOdktiYzhpMThreWc?oc=5" target="_blank">Subsea Cable Market Expands as AI, Geopolitics Reshape Global Networks - Data Center Knowledge</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 13 Feb 2025 08:00:00 GMT" data-title="Law Can't Stop Undersea Cable Cutting by Russia and China - Forbes">
+            <td>Thu, 13 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxONHR0MUk3My1hc2V5TkM1NFZqbnd5R25OZ2s2YjB4YjdWaXpzR3RhXzZ5aU4ta0czWEZHdVdsR1ZXdlVXNUxBY1VuSjFKVFo1dzJ1ZmNFQ3JXaEJCM3dGa1lEeTM5eEtTWVJMTDJIR2FXcUJzSXlFeU9hSmFHbzBYSVYteEVzNmxZeG5IRjNHUm1BZFlJSWktUG1JeVZ1UkdxZ3UySlUwQ1R6MGdCbjZTeDlZaUlMQQ?oc=5" target="_blank">Law Can't Stop Undersea Cable Cutting by Russia and China - Forbes</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 14 Apr 2025 07:00:00 GMT" data-title="Taiwan authorities charge Chinese captain over intentional subsea cable damage - Data Center Dynamics">
+            <td>Mon, 14 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivwFBVV95cUxObUVxeGM1ZkFGSzRwRFVYMlBadmJ3UHhCal9kYU1VOXg1YkRmajd5ODVDZmxSR1NyS3ptTGRvUWRpVTVBdWhHWTZkWlVkUk8tcDU1cXVlSjV6ZDk5T0dRREJhaXRpOXV0S3pXLU9nNW5SMHpKZWtzWXZtc2tiQmdPaHpxR0xHdlpDU0NtcFY4dUFxeWNkTVVCM2VSOVJOaERWdVVuX2F5RndDQ094WDRybk83aHpGREpEcVpwSV9RNA?oc=5" target="_blank">Taiwan authorities charge Chinese captain over intentional subsea cable damage - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 26 Feb 2025 08:00:00 GMT" data-title="Taiwan detains Chinese-crewed ship suspected of cutting undersea cable - CNN">
+            <td>Wed, 26 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMilAFBVV95cUxOSjBUenJxVmx5MTJYZVhzbmVUalZ3Y2xJclRHTGY2RlBXZ1JjSEZpakFYbTVBX09BV3FRc21hSlhwUjlpcFB6UEk2STlUV21vWWpWb3Z5eVpoQWRJOGwydC15OTRDU1VfYVh2cWJ4LWRVMlRoWTJucS1VVHdEZFpTNTBDanhRMFpmOWtPUFNpMmg5LW5t0gGLAUFVX3lxTE9vN0ZTbUUwVVFuUWk3Q2FzeGx5NUZJcVpCUG9Uc2lOZEtlaWJEenNRZWZ4SW5kVXc0NjMzNUJQa01wZnhJOTdjYk9VaEg4b1kyejNzOE9iOWpONThKaTBNRGhWVW1TN09hZmprTnVVVEEzTXMzendraTk0OGdMazlFejl2Vkk2dFhFbE0?oc=5" target="_blank">Taiwan detains Chinese-crewed ship suspected of cutting undersea cable - CNN</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 14 Feb 2025 08:00:00 GMT" data-title="Strangers on a Seabed: Sino-Russian Collaboration on Undersea Cable Sabotage Operations - The Jamestown Foundation">
+            <td>Fri, 14 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiuAFBVV95cUxNa21ERFR2cGhxdUFJTEtaOWVoLWxCV25IemxqVlFEbUVDTzBaQ3VzOWhLS0N1Q1IzckZobHZ6MVFWUUQyWlNERUFNTGV0WktLZmMxa2ZLMWNuamVYWlFuUTI1ckp1aFF4ME54aHhIanlTV2I0eEoxaE16LWc1Q29pczhyOGF2OE9NeW82aWFDU0ZGZVhuMGZncC1nbmQ3SzBGUWN1ZmJ4OHBybmtLUDhoVU5MY1F3cXpP?oc=5" target="_blank">Strangers on a Seabed: Sino-Russian Collaboration on Undersea Cable Sabotage Operations - The Jamestown Foundation</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 11 Apr 2025 07:00:00 GMT" data-title="Captain of Chinese boat in undersea cable case indicted - Focus Taiwan">
+            <td>Fri, 11 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiVkFVX3lxTE8wdEhDR0tzWXlZZmxvQTFIdUJDVXRIUkZIak5zaUxMM3NiNzlCclJZSVY1Rk9uT0xpZks1R2VYY0UybjBnU2dZa2JiYUtiUFhva0FUWUV3?oc=5" target="_blank">Captain of Chinese boat in undersea cable case indicted - Focus Taiwan</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 05 Dec 2024 08:00:00 GMT" data-title="The FCC Proposes New Submarine Cable Systems Rules: Six Key Facts to Know - White & Case LLP">
+            <td>Thu, 05 Dec 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxOSHc0OFd5bWdZLWVNOW5wZG90Sy1iRjdoVUtNUnd5djluMGotS3JwUTdWTWtWYTNvbF9xRkhMekhmS0k2M2pRV2dfVzZnYjA5bFAzRHZVMUdEcWF1VDAtYVFxblEtNWVISGhGbUFPejBfZ3E1ZlVhTzJtUllHMDNOa1dLUGpybDU4RXpHenJTd3g4QWtKYmNMM0pBNmlxVjBFa3NHS25RSWM?oc=5" target="_blank">The FCC Proposes New Submarine Cable Systems Rules: Six Key Facts to Know - White & Case LLP</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 26 Mar 2025 07:00:00 GMT" data-title="IT2EC NEWS: NATO to Open Center Focusing on Undersea Cable Sabotage Threat - National Defense Magazine">
+            <td>Wed, 26 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivgFBVV95cUxQQ3BmM2EwSFg4ei1DeTBrMlNFWUozVjBWWDduZHpqTXRoa0V5amhNZVdUd3ZvQUhlMk1Gbi01SEd1MVE4VkY3bHhWWjFCNWR1RmZjS3RueG5BLVVkRWtwSmQ2NnE1M1NlZmtnOHNpa3lKVDFGZERHNFdrNnoySkRpdTNjaWhKNkMtNGFJU1dldm5FYmFFekdjenVMYURUTVU5MGFKNm4yb3FneWlTdURhSWVqdXdURTFDYzRUTXRR?oc=5" target="_blank">IT2EC NEWS: NATO to Open Center Focusing on Undersea Cable Sabotage Threat - National Defense Magazine</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 14 Feb 2025 08:00:00 GMT" data-title="Project Waterworth: Meta announces world’s longest subsea cable project spanning five continents - Data Center Dynamics">
+            <td>Fri, 14 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxPTzg4Y2hKZDZEeE1vQmc1cjh1UndmUWVGWDllRlk2akdzdFdUaFluZjczN0JUdUh0VWdoeE10WTdHOXBiS2hONVR5Q3ZtMnYxUElqRzZNbU5jc1NteGRyc0FxSXNqR1lsSXNPWm1QQV9NbDNGdDJicjBIZnE1R084dldiR1J0aE94NFRMWHVYN3RwRHZIbDlyVE9TRURXMllxbG5KNVFrWUNnVmg4MnBFbHJXNlRSekY4dklROGZpdTVnM3lxVzlUSFRkMVAzOWpadUtERA?oc=5" target="_blank">Project Waterworth: Meta announces world’s longest subsea cable project spanning five continents - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 24 Jan 2025 08:00:00 GMT" data-title="Opinion | The Undersea Cable War - WSJ">
+            <td>Fri, 24 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxQOGhFd3J6cldLT2RQdFJfTTRHX1g0d2dhbnVWSE1RaHFhUUtoU2xoTS1FUElESzNuZ2cwRG1OVnEya3BfMmd2ejcxTk9CanpwOWpGclVRdGJUVGItZDZ5YkR0dXV0Z3NnVG1tZFI0U3pHTkJrTkZzNEJyUzVJdUl6R0poaG0tT2szeXZiQmE4UDBBVEFFRnRvWDV4b1hwV0RP?oc=5" target="_blank">Opinion | The Undersea Cable War - WSJ</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 20 Jan 2025 08:00:00 GMT" data-title="Baltic subsea cable damage was accidental, not sabotage - US and European officials - Data Center Dynamics">
+            <td>Mon, 20 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiwgFBVV95cUxPeWVyUHVNU2pWX3pQNlBHVlRJWDFiMGdxVG9VRmFBN1NQaWpzSFhFSW9ibUVOSFM2M19kck9PME50TVdxQmY3WXhZdUR2T1RBUGVXNUl3SmlxdU9falpJTlJCeFJHNWw1c29TQXRMbTNCcVFNRXF3ZXA5S1ZYNVJ5cHhxOXlGLUlidHVQV2VTcnlzSDVTU185OUo2akhLb1FZZmtBd3hneTRoU05DU1MwaVlrM0tzXzlwS1ZhU1JWMnA0UQ?oc=5" target="_blank">Baltic subsea cable damage was accidental, not sabotage - US and European officials - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 07 Jan 2025 08:00:00 GMT" data-title="Chinese vessel suspected of damaging undersea cable near Taiwan - VOA - Voice of America English News">
+            <td>Tue, 07 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxNME5RT3VVQy01REFNTThKVm5Hc1QzSGdyZFEyMVZ2eHBMUC1Zb24tdzRET1F6d2FDbmVRZnVFcTdIYnRud3VLYTRnbllMYnQwQUpZT3NKSVdsVUV4Y2IwOHFucTB4bkxodFNVcEMyRVVCSktHRjhQRHNmZHg0TXNwV1FWT0hOZDJLQTAtVHBfMWVSMGlzdVZxWDZJenlJMUs2akNmTNIBpwFBVV95cUxQd09oUlpHdzg4ekF4dWJqNkN4YkZXVm1ORXRmc2U0Qmw1cWpsNTNHaXZzY2owZGRwTUVFSUdPcnhvbnZoT0lRQ3FIUlRrTEJDTWM5TkdIYWRqLWFYWGxVVFBGVUFmQjhoaXl4WTRHd3l3UTdHei1TeFJZajk0NDluejgyZE1EcDVUcEctZkJ5Vk9Gbm00b0p0UlViRk1IYl9kM0VFUE5EOA?oc=5" target="_blank">Chinese vessel suspected of damaging undersea cable near Taiwan - VOA - Voice of America English News</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 31 Dec 2024 08:00:00 GMT" data-title="What to know about Finland, Russia's 'shadow fleet' and a severed undersea cable - NPR">
+            <td>Tue, 31 Dec 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxPaFJoWjZJdzh0VW85bXBCT2lDYzNlRXpzWHNLbVItcDJlY2hvR3kyMElwdG9pNTMyanJ2M0d1WWE3Ums3MTA1VHlDM0w3TW1BckVhYVlHRG5VanJYWmQ4TTQ3emF4ZHk4TFRCNmM4a2dRVDBVVDhMNHJjRjQtUy1HbWJBSGg1ZkRvN1JuQVlTS0t0b1MyVmZYZHE3VQ?oc=5" target="_blank">What to know about Finland, Russia's 'shadow fleet' and a severed undersea cable - NPR</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 25 Feb 2025 08:00:00 GMT" data-title="Taiwan Detains a Chinese-Crewed Ship After Undersea Cable Severed - The New York Times">
+            <td>Tue, 25 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMieEFVX3lxTFBuZzdUT1MyaHBGOWlkekN6Rk5mNlphTGNFZFctNnQxUjZMNzRTd0pDdUZvNFloVzZibzVnVnlNa0NyQ1Z6S2ZQYTA5NE44YmFiRk9FX0QtcXNuckJrN2RIZ256NF9KendielkySWJmVW5QWWpoblpJbQ?oc=5" target="_blank">Taiwan Detains a Chinese-Crewed Ship After Undersea Cable Severed - The New York Times</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 10 Apr 2025 07:00:00 GMT" data-title="Telecom giants urge Europe to strengthen subsea cable security - Capacity Media">
+            <td>Thu, 10 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiogFBVV95cUxQOGxqaldvdW4td0Y1UDlVajRJQm5qcGllQ0RjbDdpYWVNaHQ4SnlRTWJjV19WS1BGVFo1aVNvZzJkd3B5SzFZeWtYTVhsUXNIeHktcDJ5amVQRmhqNmw0YVJjN2lQY0V0UDFEZnp2bmF5Vnh2S1AxQ25JQ0ljS0x4OUJVdHAtN25lTnhfNTdWTWRPUUFqZVZuVUJSMm80Ynh1T2c?oc=5" target="_blank">Telecom giants urge Europe to strengthen subsea cable security - Capacity Media</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 26 Feb 2025 08:00:00 GMT" data-title="China says Taiwan 'manipulating' undersea cable cutting incident before facts clear - Reuters">
+            <td>Wed, 26 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMixgFBVV95cUxObkF4UkE5TGVibzNFbFp3ekE5bXhXVFJZcWRDOUJfMGpWQjVvUXU4bWM3MGp0LW1yZ1VobXhBcTJzeFRNbmhXbE9pdW9CVWdwTi16ZXN5U0cySnp6bFk3Ml9tR2d4N2FaZXAyS1RrUUNBcG1zRFdpbmRiaDVPYUNyazlYajd3cThhZWpUeE9NbUFIR1RwSkczS2t5Mkt3S0ZxS1VGQ2JDSUc2MDFRMmd6VW01YWJsbVZKQldOMFBXRzBpM1NtZXc?oc=5" target="_blank">China says Taiwan 'manipulating' undersea cable cutting incident before facts clear - Reuters</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 15 Jan 2025 08:00:00 GMT" data-title="Amazon files for Ireland-to-US subsea cable - Data Center Dynamics">
+            <td>Wed, 15 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMikAFBVV95cUxPVDNkTm9zanYwOHd2SlVFbGJ5TmhKZDk3OTJEWmtBbTJKTi1kNXM4cmRQNE5ZMUNTdXYxcHVGck0wOFMxTEpDS0F2dm4wTS05UTdqMlRSSF8wRkUwc0dvOUY3aGh0Sm5iNDN0MXk1QXlLbEZTLWlWVkxjTkhtVXBnTkZmZThhSUxYMlI0QUJTZVM?oc=5" target="_blank">Amazon files for Ireland-to-US subsea cable - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 17 Apr 2025 07:00:00 GMT" data-title="Italy's Sparkle dives into subsea fiber sensing project - Fierce Network">
+            <td>Thu, 17 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxPSWFZWW42Q3ZUSm02M0JzTFd1aHhQbF9YWjl1SkN1UlctVUhXVTBJdVloeEFFRkFOcWJfSzJxdEdsZ19Ca3lScWZQTmE0MllHWE96N2FrT2pPdGdFZFktRWQwVGNrUllYaDZ5QVpWVkVoQWVZTE04RXI3aUJCbEJQVlFQS1F1UU1XTUljLVQtc0hNSEU?oc=5" target="_blank">Italy's Sparkle dives into subsea fiber sensing project - Fierce Network</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 30 Jan 2025 08:00:00 GMT" data-title="NATO, EU on high alert as undersea cable attacks escalate in Baltic - VOA - Voice of America English News">
+            <td>Thu, 30 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxNdkZGdFF4X1V5ajB5NTFiQkVRb1piUW1aa1RyRUpBeXdVMjhZZWVOZjFwc2szU2REczQtc3gycGw1blhCZkxKYkNNUi16Z0VJRncyTE03QXliWXN4czQ2c2o2OHRfZVIwYlJSTHZSNzA2aG1INWwybFgwVlREMnAteUU4YjBKSlpCYjRidG5Nbkhpa290M3dPTUpiX0gxeDMtZDJ2bWRjanHSAasBQVVfeXFMTXhOTW9iaDFJbGFqN29zNERWc2EydDZZQ1hxdm1XRzNYNUxYTTRaaGR0RjNEZk9aYzJmUVY1emw4ZVFlbXVuemdlTzFpcGVnX3VCeFg3TDBrZlFBVl84N0VkYjl3RWV1ZUZHNmNtck04QmJsd3hNUmJ5am1VN2tBODVMUHRkanRaLTB5c3NHdE1GRDgxaGFMdHBwcWo0SHJnd3ZRQl9LVDU2WkpJ?oc=5" target="_blank">NATO, EU on high alert as undersea cable attacks escalate in Baltic - VOA - Voice of America English News</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 24 Mar 2025 07:00:00 GMT" data-title="Chunghwa Telecom, SK Broadband, SoftBank and Verizon to build new submarine cable system - Light Reading">
+            <td>Mon, 24 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiyAFBVV95cUxPOWtvS2tMWXl0bkdhYVp3S2VJM3BNUHJEN1NvRGJEdExmQU5ZN0ZFeGhYUWtCdGl6NnE1NWVISUdlekdRdWcwTjlBSW9zclhKM0RSNTdwV1pJcGRQejFoUkdVQVgtdDY5bk0ySV9IVENyd0QzUkFmNWpLb1N1UlBnWEhXVmFfbVp3R2NLNjVtWmlmZlJXMWlaVV8za3Z5OFNrYzZVLWktZlZUMlM5aklLMDEzUkk4eWZPN1dCY2gyYWs5RXZXV0ZBWg?oc=5" target="_blank">Chunghwa Telecom, SK Broadband, SoftBank and Verizon to build new submarine cable system - Light Reading</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 16 Apr 2025 07:00:00 GMT" data-title="Damaged Finland-Estonia undersea cable expected back in operation by mid-July - Reuters">
+            <td>Wed, 16 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMixAFBVV95cUxQNHZEX3ViUEZOQlJ2SFYtMWxkVGJ6QzNPQWY4aWx1X3BodkZ0NElLc2M5VVY2OE5sRXNOdjFVb04yYjFCTk5OQzZwQWhXYlhYUUprTHlxRzBJVXZHQVNWMk9lVEl3THdVNFB2TnJzcmVPVUtsSHBZVVRid0VRZEtjUi00YUtiQTBUZ0gySmFFOU00YVAyQlRRNWlLX1Y2WWxISXAtMTVvWlBjM25qS0tVOGVqZXd2Zm5xUjQxLTZzTEVvRFZt?oc=5" target="_blank">Damaged Finland-Estonia undersea cable expected back in operation by mid-July - Reuters</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 15 Jan 2025 08:00:00 GMT" data-title="Report: Chinese scientists have dabbled in undersea cable-cutting tech - Defense News">
+            <td>Wed, 15 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiyAFBVV95cUxNTElnako1UWxxWEZoTVNKYjRwd1kxMmNRcHNRMmJmNEJHcVVJd1dUOHhxYVB6UFNUZDd5ckszcVBNVGpuRUsxem55bE5oelAwOVhjSjNjX1lzQzRHdWdzUzhBODRsUlhXdWdPVENfX3BtUkk5aHV4SUpTbTR3bmtlaENaNjd1a184THZLUjVwM0NtS0dCbnktcGI4WjN1ZjZTUlQtN3FvaXMtOEprWndmOWhFUXB1WUtsdDhzYXdTZHJIS3E4ZFY5OQ?oc=5" target="_blank">Report: Chinese scientists have dabbled in undersea cable-cutting tech - Defense News</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 06 Mar 2025 08:00:00 GMT" data-title="PEACE Submarine Cable Cut Disrupts East Africa - SubTel Forum">
+            <td>Thu, 06 Mar 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMie0FVX3lxTE9Pc1VkdWJnd3ZYcXRIWWZqejE3a2hJOG5UQ0JRVDY2cDZISFVoS2c3ZFpFeC1OcmU0UWtKNTRkZmNPeWhHMkd1cnZBLWZ2RlR6VTdzXzUzUHBTNTJVQkJGLUtQeXV2MWxRRWxyVFpLaTk2YV9RLXl5MGotQQ?oc=5" target="_blank">PEACE Submarine Cable Cut Disrupts East Africa - SubTel Forum</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 31 Mar 2025 13:02:06 GMT" data-title="The Divide: How subsea cable cuts put spotlight on Internet resilience - Light Reading">
+            <td>Mon, 31 Mar 2025 13:02:06 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMirAFBVV95cUxQTnJFeG0xeG9ScDA4UU1YbWNTa3ZaMHRZcUpsZnotaVhZRkZYRWpuRmZUT1NLajVjM1dQMlRtamJOSVhKMTBLTGIzY0NxeVRITE1LY0VNNXlWQ01tOC1pbWVyQnB5dmRXWjBhcUhMVUpMbTFtX3pNOTF2Z1ZNcm9MSW1iNmduaUxNWVhpaW95VWY0bFFoM3dVeV9QTXo1RTlhdEw1OUlfSjFrZG5a?oc=5" target="_blank">The Divide: How subsea cable cuts put spotlight on Internet resilience - Light Reading</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 25 Feb 2025 08:00:00 GMT" data-title="Taiwan detains China-linked cargo ship after undersea cable disconnected - Reuters">
+            <td>Tue, 25 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMixgFBVV95cUxOeDRKbG95QTMyQXVyWXRYTU5BQVJMeUdqZ0ZtRHJJWWRuXzdldU45NzlVdkF5dURFcE1NNnN1dlFUd2pwTEY5RGF3Y09KZ1ZKaTNYOXZ3SVZoUkpidXpyVlFRbm51UmNJUVFOaEV1UVF0YXdlVnNLam9oTy11cF9HZ0k2QzJDLVFiSFdHQzRxREhVVUJpbGNEc2I1NGZfNUlteGZrVVpMV0lPaVNjaldkUERzWnA4S0QzYzNZRXBNOFdxWnV2bGc?oc=5" target="_blank">Taiwan detains China-linked cargo ship after undersea cable disconnected - Reuters</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 07 Apr 2025 07:00:00 GMT" data-title="GT investigates: China’s open innovation offers new options for global submarine cable construction - Global Times">
+            <td>Mon, 07 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiYkFVX3lxTFBuQXFrWTFDQjQ2LU8wYUN0bHNJY1BoYzJTcDEwU2dEdWxhTU1fbUk5WEpQR1JZRnN5RHdzNmtMWXl4Nk1WTzBSVFppQldOY3BMdXQ2bWxsX3VIQ3ZFeHVsZzR3?oc=5" target="_blank">GT investigates: China’s open innovation offers new options for global submarine cable construction - Global Times</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 21 Mar 2025 07:00:00 GMT" data-title="Subsea cable repaired after outage in Sitka, Alaska - Data Center Dynamics">
+            <td>Fri, 21 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMimgFBVV95cUxQYmdUU0hBYkRNbGJXWHA2b25yVWNxVFN0Z0VFVE1pVlNUbzZpeUItajktNjkxUnI1NlRXaUtOeWRINkhFM0ZobVU2VDlaWFlDOGJKUUJYbGpQVWJfS2JSWWN2aVhSeGx4T3hTT21keVBULWRORFRZdUwwNkROaURhZVg3RmFtZFlnRnpwbDIyR1FKc1dqdVRUWVdR?oc=5" target="_blank">Subsea cable repaired after outage in Sitka, Alaska - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 17 Mar 2025 07:00:00 GMT" data-title="Liberty Networks, Gold Data, Sparkle, and SubCom Announce Execution and Enforcement of MANTA Subsea Cable System Contract - Business Wire">
+            <td>Mon, 17 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMihgJBVV95cUxOcktDQmh3Z1lZTVpPOE5qZEcxVmpwSVBmeUMyX28wRkdVSGdjZER4OC1pX1g4NWFkWmdLMWtxcmFlaVZSTWRhVVctNGp0V0owcXFPa1R3VEZQQnJHemgtREJLbHJBS0Vxakc4OElMTldPbkNUdjktY2NSQmRvOE5wYU15bWlfR3JyeXFnOW5IQ2VpbXg4VkF0c044M3JYWmJPSUVKbGtNaDhxNW8telZiLWIyYVpWbjNxZWszZmYyZ1ZqaW5Mdk45VDRTUC0yUGJCZU5hTVhLTnoyTTh6Wi1tODdCeTVzcExiTEQzNzRDdTBINlp2QzNvV00tQ3Z4a1RpRjlFd3NR?oc=5" target="_blank">Liberty Networks, Gold Data, Sparkle, and SubCom Announce Execution and Enforcement of MANTA Subsea Cable System Contract - Business Wire</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 16 Jan 2025 08:00:00 GMT" data-title="Creative Destruction: PRC Undersea Cable Technology - The Jamestown Foundation">
+            <td>Thu, 16 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxObHJXNFVUSHZKMGdUbjgzNThlbFhVaXB1RHBuandmVFNXd1Y4cXFQQ09fRlo3dncxS0ZTZTlJYWVCYjc0dTY5eWFXX2x0TUFBVzVsSjRDUjZJd29UUXVRV0dJYVZJZXBnTnNWLThScTlVai0yOUc4UzlmN0ZrN2JrSURFTGxOUkpf?oc=5" target="_blank">Creative Destruction: PRC Undersea Cable Technology - The Jamestown Foundation</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 08 Jan 2025 08:00:00 GMT" data-title="Exclusive: China-linked shipowner denies Taiwan accusation of damaging undersea cable - Reuters">
+            <td>Wed, 08 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMixAFBVV95cUxObWstUTEzWU8xd2cxam9pM242ckVJVjUtMUhPSG16YUt4X1dOYWVWSEtHNm9IM1ZDbnp3TFNSREhFRXhRX1luOE5ZaF9JbWRhdzVmQ0d2SGJWcmdIWjJ5OG9jTEZ3Z2Ytb3pUUjZ1Nk00cGtkV0tTV05LSlB3M2tSRHVVQURXYW1ON3owWFpHcTBWYmVTXzYycWZPSVgtWjV3NzVSbzMycS1fc0tlbFN6dnBua3R3ZXUxc2tyTlVORWU0ZWpO?oc=5" target="_blank">Exclusive: China-linked shipowner denies Taiwan accusation of damaging undersea cable - Reuters</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 28 Feb 2025 08:00:00 GMT" data-title="Poles apart: Building the Arctic's first subsea cable - Data Center Dynamics">
+            <td>Fri, 28 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxNTlhfU3hIaURGYmpLYnJvZnZxbTV0cjlOR3hIM2Z2bGZYc0s0SVZlb2w2NUlWWUtXY3I1NVB5MmZfd25UZEI1a0duc05jaGcyckFXeU5Vc3FJYnBVaW93YV9rdXc4ZGxCNW1qQnROQ09Xa0ZHV0FHbTU5bnJETzYzZ1VtSEswS29XQnhOWW1Dcjd2RHd2N0JFUHBzY0tsNVN2?oc=5" target="_blank">Poles apart: Building the Arctic's first subsea cable - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 31 Jan 2025 08:00:00 GMT" data-title="Norway Seizes Russian-Crewed Ship Suspected of Cutting an Undersea Cable - The New York Times">
+            <td>Fri, 31 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxPODY2VXBVNXN5X0I1QWdBQmpKZXdUbkJBczVqX0loRmc5QWNhcWJlMDdLeFppaHJ6TnVIT1ZHNnFsdjRrLVFIY19LRS11YW43OE9lVk1wc3RXYVA5ZEF6Y2Y5eU5ydDR2aVFNVWxha2ZwNEJzWXpKVGdTQkdDNzZlcUpHcEYzZDM1dmRkMjExWUNnT1dBOENEbQ?oc=5" target="_blank">Norway Seizes Russian-Crewed Ship Suspected of Cutting an Undersea Cable - The New York Times</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Sun, 19 Jan 2025 08:00:00 GMT" data-title="Accidents, not Russian sabotage, behind undersea cable damage, officials say - The Washington Post">
+            <td>Sun, 19 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMingFBVV95cUxPWVVUaHRwWThReWhDa1FuOG9vMmtMamJjT2RtdnQ0NkN6SXpJWE13dktsNVdEX01fYWZSMzlMSmpONXNIRTVfVmpyN0dvVC12Z3F5SWVOWS14Qi1STkMwREk4M1ZrVFdPbnNJSlJJT3QzMXM2cFoyZFpNNUd6aGdfXzVHQ19QX2Nzb2N0ZFoxLThKVkZvUEVXbjk0bmQxdw?oc=5" target="_blank">Accidents, not Russian sabotage, behind undersea cable damage, officials say - The Washington Post</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 07 Jan 2025 08:00:00 GMT" data-title="Taiwan coast guard says investigation of damaged undersea cable stymied by weather - Reuters">
+            <td>Tue, 07 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMizwFBVV95cUxOVDVBMmhXaWVrN0ZlZHctQTRRRVlVbzY3Q2NwUHhMYlBjOWxCMEtYVC1TZjVPYWFOWWhYOWxKUGZuY09hU1EtSGs5ZTBReFNYMzgxbUR1N0ZHQWZ0WnotUW00NUVFdUtmWkNnaGNJemdBZmdMemRvcHpYT1Q2OUxPcG43OVRjbGJWaS13UjFQcE9iMEtIYXVfQnRzd3R1SERKdExDZ1JkLXdtZjlQTGVVTnRjektIM05vNmlOSVdBWm9PZEQ3d2o0ZjNmWHhCZDA?oc=5" target="_blank">Taiwan coast guard says investigation of damaged undersea cable stymied by weather - Reuters</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 21 Jan 2025 08:00:00 GMT" data-title="Internet disruptions reported in Northwest Alaska due to subsea cable break - Alaska Public Media">
+            <td>Tue, 21 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiwAFBVV95cUxPMThlUnVLblN6b0E2RkdWVUxGVFJ0N0dRQlR2ZlFjZ2VJVkdBLXd3Rkd2YVgtdVNsNzhsZERyUmxHa2JBQnZnYVdCelBHbnJ0ajRWVWF3T3pIVmlyOEk0ZmREa1FDV2p0b1lsLUppcXJsV3oxUGFRZklRanRCWFpXZDJaYldCdkl2czFMYmVIU24tZm5Mb0hfOXpNSXdkVEp3amoxaGxOOTY0c2Fwd0ljSWtjOWVBNHlkTEZLb0ZkT1c?oc=5" target="_blank">Internet disruptions reported in Northwest Alaska due to subsea cable break - Alaska Public Media</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 25 Mar 2025 07:00:00 GMT" data-title="Construction begins on E2A subsea cable connecting US to Asia - Data Center Dynamics">
+            <td>Tue, 25 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxNUS1MMTY1TEYxMUg5VE1tanhHNDJvdk9NYVM1bjJfMVM4MUdHNkNlanpGTWhrbGhlazhEa1JUb1ZZUkFKUGpaQVJyTUFVOEE4bVpacVAxMGVucU5VTXdpR3h3MUdwZURZTTR5RVdlTHRjUVJValJXZnVySlZNLV8yVWFGWjNmc3FWODdwOHptZ3VyOVpDR3d0VWtjMFlfMWlDUjJyY2Y4a3o?oc=5" target="_blank">Construction begins on E2A subsea cable connecting US to Asia - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 10 Mar 2025 07:00:00 GMT" data-title="Peace subsea cable cut in the Red Sea, repair to take months - Data Center Dynamics">
+            <td>Mon, 10 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxNRUtzV2JfSUJWSWFmOXhXQVZZZTdNMFZ4bzdKckxXV3lXQi1UME5ueW1nejllUG9xNnFPckFDLUFPVlJieHdyUnhNTjVXMndsMnlYblk4UTloOVBObUU3RlpMazd4OUpzdW9PVU5nbDVMdi1aMGRjMDJGQWEySG52blFRby0tWnVaTU1zMEY1bmlZSXFJN2hxaXRzT1BZb2djc29IMzZn?oc=5" target="_blank">Peace subsea cable cut in the Red Sea, repair to take months - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 25 Feb 2025 08:00:00 GMT" data-title="Taiwan detains Chinese-crewed cargo ship after undersea cable damaged - The Guardian">
+            <td>Tue, 25 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxNSk5QSXpURE5uSFpSdGtURlhySzdqZ3B4TTBGVjFJUWd6S0hxSVllb0VhS0pDM2lBV1lhLXNOVU9VQkg3Z1ljWGVMRkQxSkY0dEdzWVY2Ry1VQWo5a0x4WG9qQjRXNl91b095eEVCbmZZREdIenlDb05HOGV5dDNfLWljaFlkN2t4OFlOYnBHVG1IWFlJR2EzaDRVOVFUd1NQb2FoT3RkdHlVVmJ0WU1kS2x1Rjd1dw?oc=5" target="_blank">Taiwan detains Chinese-crewed cargo ship after undersea cable damaged - The Guardian</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 29 Nov 2024 08:00:00 GMT" data-title="Meta plans to build a $10B subsea cable spanning the world, sources say - TechCrunch">
+            <td>Fri, 29 Nov 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipwFBVV95cUxQUmRscm9nTjJ6Z2hXem5Wd3lLNmlzMXZtaGkxeWpQLVU5dl9pUnFxeDNGa0Y0SXVESmk5bkhFakdEdXhUTWE0NVNvMmdNcEcxYm5scUdwQ0VnSU5OT283a0RnYlBpYVp1aXA1RkRtSEN5Y2ZtaUt6Y1JMRThRMGN5ckdQeko5NU5QRXJCTHNCMEtSQ2tMZW5RcnBhcWQ2aDEwdnVENm9Saw?oc=5" target="_blank">Meta plans to build a $10B subsea cable spanning the world, sources say - TechCrunch</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 28 Jan 2025 08:00:00 GMT" data-title="China’s Undersea Cable Sabotage - The Diplomat – Asia-Pacific Current Affairs Magazine">
+            <td>Tue, 28 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMicEFVX3lxTFBPY1kyZW94eFN3QmowQkc0TW02Mm9rY21NdlFhRFNlU2E5OVFueDIzV2F2clpVel94bkdVeU81WFFKWFNqWVllLS1OOWdsNzJZeW90VEJpaXR3dDJfYlNSUHo5akRKNHVrd0ExUUVzT2s?oc=5" target="_blank">China’s Undersea Cable Sabotage - The Diplomat – Asia-Pacific Current Affairs Magazine</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 10 Apr 2025 07:00:00 GMT" data-title="BIF Hosts India's First International Subsea Cable Systems Conference - SubTel Forum">
+            <td>Thu, 10 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiiwFBVV95cUxQY2d6M3BWQlFwYW1xYi03WF94LWF3RC1BS09JVHFNeEVzWjlwRUs5Z2UwRUdhMmFrSHdBRVI1U25feE93VVhSYkxYR1dZWEd3VUFac3BjX29kVFNQTS1OTFlLUGVGT2RmS2M5QzFVN1drVExnQUpLSXN6UXZ0UldpSkROODhjT2Q2alZN?oc=5" target="_blank">BIF Hosts India's First International Subsea Cable Systems Conference - SubTel Forum</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 09 Apr 2025 07:00:00 GMT" data-title="ZTT Wins Submarine Cable Contract for 1 GW Chinese Offshore Wind Farm - OffshoreWIND.biz">
+            <td>Wed, 09 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMirwFBVV95cUxPOXc4NjFLUUNKdDU3bnd4WDd3d0NqYlo0RE5mak04SEJEcE5jX1I5V214V3N4NmJiMHNHY1owVFN1XzR1VU83Q1kyVHlfYXEtVXF6YVg1VWxLcWNrNGhTMGZnUjhnWnhBaTFXelZ6MkhtTUlRX3VwVEh5Yy1rM0FiRDN2M3RGQXVQdy13TW1ndzFYUHlYLUpyLVhnZVlhc0YwcUxQekJxX1pWOHhxTTBR?oc=5" target="_blank">ZTT Wins Submarine Cable Contract for 1 GW Chinese Offshore Wind Farm - OffshoreWIND.biz</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 10 Apr 2025 07:00:00 GMT" data-title="Open Letter from European Telecommunications Operators and Subsea Cable Stakeholders to the European Union, United Kingdom, and NATO on Subsea Critical Infrastructure Security - Mynewsdesk">
+            <td>Thu, 10 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi1wJBVV95cUxNVU1aaFhMSDFNVUdXTk4xc3NjUXFXWDN0Q1k5SmM5VHpYRmhVRXExbDhjZWplc1dzYm5RMXlicE56TkxneXlsTUplMHNFWGZBX0Q4RUZiQ1J1d0F3dDBuajVyWFBjRXJoWFRqcTlFQ3dGWHB0d042TVowN2pubHZNVk5Zc1RHZ0lPbjZyQ24tRVlqRDh1QUd2Rm9GWTN2RUdfZWxrVElsMF9RaTlMV2w3ajdWU2FvZEVLX2VWZmpqaWJKdEVVUk5MWHFXY3U4RDMyaWJpRHpzbEFQaW5BSlgzbUVyM1FhcTBORVFIckFUcmZ0SXN5V3NjZDBrYlluRnFhU1NWQ29yQ3ZBX0w4VVUxUHdaZUZEN2R2VUp0bWQ3TkxycUpSakJIOEwxWDlkLTc2RkltT25LX0tjY3Q4UWJ6V1lvd0U2UXpxUUlaaDFnTkNfTkhTMlRV?oc=5" target="_blank">Open Letter from European Telecommunications Operators and Subsea Cable Stakeholders to the European Union, United Kingdom, and NATO on Subsea Critical Infrastructure Security - Mynewsdesk</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 18 Feb 2025 08:00:00 GMT" data-title="Meta plans undersea cable to link five continents - Courthouse News Service">
+            <td>Tue, 18 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxNRDQwc1VaeTVROERJY2dpYVNZc3VjTzhOYUgzNHJSZnhlT29BamZfZ3V3cXVaRGZWTHRLcWhtQnZ1akw0el9XandrMGQ3RzhRRE1OY2JJTHRIVjJNVHg2dEpLRVJEYVc2aHZoOVFtWE1WeEJocFVjYWozZUxpRWZJZEdiNVRJUTRh?oc=5" target="_blank">Meta plans undersea cable to link five continents - Courthouse News Service</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 18 Mar 2025 07:00:00 GMT" data-title="New undersea cable tech listens for sabotage — can be retrofitted to existing fiber optic lines - Tom's Hardware">
+            <td>Tue, 18 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMi0gFBVV95cUxNSGFJTTFoajRFWjI3bkhnMUJqWS1JQmFuTEJpRzdINFVLVkRSY1UxMUQwME9KSktrV2FYUGc5SWpPaFhJaDZxOUpSWFZBNlRHSzhaQTlSWUQ1VmxtX1h3YXoyc1J1cVJoQlI0ZG1fcWtWaHBrNnRjRXBxdGRUMFkxSTFkOE5XbVRwUlhUZ0tESkMtRmFtS1B1SXVrZTZsdkdOZk51SUVReVYwRlh5TlFXenBxbXZoUWRXazJ4NXlIZ0FwR21ubDB5SVZJMDc4elNXWnc?oc=5" target="_blank">New undersea cable tech listens for sabotage — can be retrofitted to existing fiber optic lines - Tom's Hardware</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Sun, 19 Jan 2025 08:00:00 GMT" data-title="Mox joins Google's Topaz subsea cable - Data Center Dynamics">
+            <td>Sun, 19 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiiAFBVV95cUxPanBSNDV5YzFfc0QzWFlPeWpHTFplWTBydmdNWmtVNFVoTklXaWVYYmE2bS1uanBhWnJVWU1zeFdBVGJSVTFWRUF5WEpON1EyekRGMlQzRGYwalB2OVpTNFo4dEVqQnZLMGZIR1hlQ2hjSFF5ZHdLNktaN0NrOWZlVTF0bU1BMWNy?oc=5" target="_blank">Mox joins Google's Topaz subsea cable - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 18 Feb 2025 08:00:00 GMT" data-title="Fishing Trawlers, Not Sabotage, Behind Most Undersea Cable Damage: UN - The Defense Post">
+            <td>Tue, 18 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMie0FVX3lxTE9DejVicndXdXE2Q2pYajNrYjlrME02Zi1nZ2xBUkpFRmRkUlV2T3A5NHItWTBJU0xsbDVrU2VIN29pOThFLTBUUFZMUnhKeDhIYWh4SVlfRFgtZHNUMGFUU2RSOGJ3RlE5VGpGbG9yd3loY3d1QlBQVFgzb9IBgAFBVV95cUxPeGpRLU1wSk9rQ2lXRkxhRzl4dGVzSzZXZTRBcjhTMENPN0xNaVk1UUQ1Ykc3RzR3YTFUTmFPYUJzcWhKdm1ucmszZmlObEJSZXBtY2l1aUNJcU41QXJiRXF3MlFmOWxqOG52YnVEZV9Dc19tRzBjSmdnODUxRndYVA?oc=5" target="_blank">Fishing Trawlers, Not Sabotage, Behind Most Undersea Cable Damage: UN - The Defense Post</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 02 Apr 2025 19:19:24 GMT" data-title="Prysmian, N-Sea join efforts to improve submarine cable safety - Offshore Magazine">
+            <td>Wed, 02 Apr 2025 19:19:24 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivAFBVV95cUxQZUdpTWJWWlBKclN5NEFwR1dMT1ltQ1lHblR0SEVHNmNEX1dTVS1CeDdHdzFEWE8zejN0bm12Ri1xMDBtTzRlNWx1S1RLT19zZnlIR1ZISk9IaW15VDU5VTVIRWxNaUl4ZU02VkN3Y2pBVjZfQlBabW9PMkpOdzExMzBfN3BDM1A4Z2dsR2hNX1JkQXY5LXA5dU1KeFd3dzBMNVhTWDhZYWNfMlltMGV0NC0ySmZJWU9qc25iTg?oc=5" target="_blank">Prysmian, N-Sea join efforts to improve submarine cable safety - Offshore Magazine</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 24 Oct 2024 07:00:00 GMT" data-title="Meta to build around-the-world subsea cable - report - DCD - Data Center Dynamics">
+            <td>Thu, 24 Oct 2024 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMimgFBVV95cUxQVjNwUU0zZFBxNE4wbklXYUNQZzRsQ3dVLXpVY1BOOHdMaXNmWlZVcVJTUndHaTUxRFVteVBJTFlCQXZLOU1tTDJJNTlYbGdWSzZuSDF4R1dUR1g0MFdLX09DUlBMV2pqYkhoemFVUGJSS1FONjZsNGZhZ2tXWDNrRTFYYklrREUydXp2dTVfZUFQZkdpR1lSSnh3?oc=5" target="_blank">Meta to build around-the-world subsea cable - report - DCD - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Thu, 23 Jan 2025 08:00:00 GMT" data-title="In First Legislative Hearing, Members Consider Solutions for Western Water Issues and Undersea Cable Construction - House Committee on Natural Resources (.gov)">
+            <td>Thu, 23 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMigwFBVV95cUxOVHdscEZUUE9VNDdtR1EtZFJSeExwWmRqZnBNbU00RWVMb1pjLXdOUEtoT2hmSWNLTGVnZ3p0SktsbFE2UnBCakRLWjd0bGJNMTZ3VDNpbEdmamR5ZDlRc2Vjal9Cc1BRdEpPRXlPUHhsNkZkTWlGYVEyNDdNRV95X1VtVQ?oc=5" target="_blank">In First Legislative Hearing, Members Consider Solutions for Western Water Issues and Undersea Cable Construction - House Committee on Natural Resources (.gov)</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 25 Nov 2024 08:00:00 GMT" data-title="The Consequences of Severed Subsea Communications Cables - Data Centre Magazine">
+            <td>Mon, 25 Nov 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinwFBVV95cUxQTE9WZ2Y4QUlZaVFLWWpRNzZBTHBaOTVpSnhMZUlpRFl1Zlh3VGpnajVodC1SekZXcWZRWEdKdTRsbF9oV3FmdW1uX3BKd3FTVXczeTZaLW5RNFZ5Um1vSHh6X0E5Wlh5R1hzSUg2TWpaUHhNd3BiYmZuREFGVHNmM2dpZ0V3NGZiek81TWZVSEpCQ2k1cDlKZ00tS21FaXc?oc=5" target="_blank">The Consequences of Severed Subsea Communications Cables - Data Centre Magazine</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Sun, 01 Dec 2024 08:00:00 GMT" data-title="Meta Plans New Subsea Cable Project To Expand Connectivity - Social Media Today">
+            <td>Sun, 01 Dec 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMingFBVV95cUxNdXJPNlUwdkJqc29vNHpSaElJVFd2ZXFQVnlhRGxVQ1BmNVhIWkhIREc2OGlFSkgxWXNGQlh0eHpJbmdtRVY4UE5Vb1oxM3BZTGt4ZjZZUWxURUw4RE1rVGdwc0N4TjhkdWo1UDctOTVMMERDXzI1eUVMbUxJM3czSS11UUZ4dHAweEtSMElPejQ4QVJGZ2JqdjdTVURyZw?oc=5" target="_blank">Meta Plans New Subsea Cable Project To Expand Connectivity - Social Media Today</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 18 Feb 2025 08:00:00 GMT" data-title="Meta to build 50,000 km subsea cable around the globe - Euronews.com">
+            <td>Tue, 18 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxOQVBCNUh3ZkpsXzd0UjdfVjhXSTh6cEFHQXRIT2RlUnJsWFE3ZVk4VmVyWWRvV0k1Y2cwbDZQbU9lVkllamRzNjU0dVF1d1J6WWdBM0lhZ1pWNndBZmliamlLSC1PZnp5dHlYQ0pHamdGcUtiYl84RE5PUjFfRFVuMXY3LXROYzk3dmhYNEhWWERKbU5SQnNPZnF0YlBaYmNVTEZna0p3?oc=5" target="_blank">Meta to build 50,000 km subsea cable around the globe - Euronews.com</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 18 Feb 2025 08:00:00 GMT" data-title="Meta plans undersea cable to link five continents - Tech Xplore">
+            <td>Tue, 18 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxNdTVTR1l2X3piMXFvempRbFkwT0VvYmJyRl82RV82bDNjbE9jN1VnY21EWG9FV1VKWnZOZlZTZEhPVHg4SFIxb0VrTzVZeWNndFp1MmxyOWJkeVUxMXdqdGNaRWoxT2YwTHA0Q1NQOWpZcnFwQko4eVM2UjJhWWwzSVNn0gGAAUFVX3lxTE13WWJMemwwaDRkQ1JsTnJLNUVYVk9KeFRBNno1bVlVZGtYVWFXcTNjMHB0MHdpcW8yUlZHOHhuNFJtNkwtMlNkQkV4dmpOT01JdEdXMmVCQzZ6TkcyX3I2RjkxZFBOTmFPYzJIS2M3UVJWVmpUWUV3UV90bExvUmcw?oc=5" target="_blank">Meta plans undersea cable to link five continents - Tech Xplore</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 10 Mar 2025 07:00:00 GMT" data-title="Expert Comment: What does Meta’s undersea cable plan mean for geopolitics? - University of Oxford">
+            <td>Mon, 10 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxQZXhVZWZUYjJONEpuQTlpSUNfV21aSVloSlNnYXMwNk9adXJkWlFwOHZWWXVkbGVCVi1vWk1USXF3UWZBT1psMi03MW43SDdTOXEwUDRqSjhlbk11N1JPbzVZMFZyVE9CbVdsNDhrQUo2ZG1JVWIwanFBRUE5MjhhbUlUOWtMVG9NNHVfUUNlejhfWEUzam0xME50M2dDb0wyenJKaWdTd1E?oc=5" target="_blank">Expert Comment: What does Meta’s undersea cable plan mean for geopolitics? - University of Oxford</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 04 Mar 2025 08:00:00 GMT" data-title="Alaska Communications suffers ACS subsea cable break in Southeast Alaska - Data Center Dynamics">
+            <td>Tue, 04 Mar 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxOaWZTemhGRkt4X1ZyT25IZnM3NUk1RlhEWWw0RWNnVUFxcGtoN0pGOXl5VWVlWjNKd1ZydGEtUHFPV2VTaEJPWTFiUjl2RzlHZk9xRE1OeWI1TmFZVHNxbWkzcUVXR0ZEU3ZTMWY5SDFoMUhLMEZ0TFdRU3Z0OG9FX2docV9qLS1kaHlnZ3BVSS1MWWlWR08yWnFZdE5WUERNekd0UUFRT05kY2tpcDQzRWlBcTBPdzA?oc=5" target="_blank">Alaska Communications suffers ACS subsea cable break in Southeast Alaska - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 17 Feb 2025 08:00:00 GMT" data-title="Meta unveils Project Waterworth subsea cable initiative - Light Reading">
+            <td>Mon, 17 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxPWHVmNEpHck5BWWxaZnNnZXJhQUxxeTgzTjJDWWJHX0tRWWo1cFVEblJBMHZxeWJ5cjJtNXQxLWJRa2RLSUFRQ19LQ0t6VGNTUEVXeG1zOG5kcHZNeDRIVGZwY3ZCNGZoUGFiMUJBbUhSa3dra2RPUUsxRF8ydWJBRnd1Q2hydGh2S0hVelJyTUJaMDNrdGk4TUh3dVFfczJsaUtR?oc=5" target="_blank">Meta unveils Project Waterworth subsea cable initiative - Light Reading</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 25 Feb 2025 08:00:00 GMT" data-title="Video: Chinese-crewed cargo ship suspected of cutting undersea cable detained in Taiwan - CNN">
+            <td>Tue, 25 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinwFBVV95cUxNazg5SFhpaGNmR3g1N0FmaHVCU0h2M3VSdk45TUdUYjVHU3M5Ui1WR1MzOG5mbUxILUZZZlE4elpJcWRQRXE5U3BWM0cxSkFLWFM4QzdqUWthYjJEcGlLa0FvbUZEeWlEc1lUbnlMbnlZdmJYczl1ZjRyaEpOYVdTQkhCSXdfdEpWbVFid1hOcDZ4dGFfdUFTQXhYdk5WTFE?oc=5" target="_blank">Video: Chinese-crewed cargo ship suspected of cutting undersea cable detained in Taiwan - CNN</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 25 Nov 2024 08:00:00 GMT" data-title="Google to build subsea cable linking Australia's Darwin to Christmas Island - Reuters">
+            <td>Mon, 25 Nov 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxQaEdGaWhPT056SjR3MDA3LVZLQk83NldNeGpBd3dEWVFDMWRBR0kyNzc2RnFxOU9ESHVHX3NRVWl0a29SdEExWWxXUTE3QXBUa3ZUUlc0Z3ItdGtyUksxcTdxeTU5dXJZekpUSl9oSk5XTlRlR0tGNVNPaGVodTF1LUF6QjdOampKcUR1d3p6c3o4dENEYk1EUzJvTmlxaVVzaHZyT09yNG9BdmtwV2RmU0lIZ1ZMZw?oc=5" target="_blank">Google to build subsea cable linking Australia's Darwin to Christmas Island - Reuters</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 10 Mar 2025 07:00:00 GMT" data-title="Sparkle and Turkcell plan subsea cable connecting Turkey and Greece - Data Center Dynamics">
+            <td>Mon, 10 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxOb1RCdkVweWJoOVMwc2R4eGl4RzJFSXd1OVFXVVdJU3QzUVl4Mkt2S0NGVUpYMEMxSnlONWtid1dfVWN0WEJxNk5hakEwSGZHWERSMjhQWnFXTTNHZTdHNFVDTEJ6d2dtWFIta0hTbFJzNm4zRW4wbDlLMzBWaWhNM2xDZ2hYY2N4cFJzRDFlZm9LSi1GZUdJSkZMZnM2TWpVcWtPN2VxYUpjZ2tPTEFnZw?oc=5" target="_blank">Sparkle and Turkcell plan subsea cable connecting Turkey and Greece - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 14 Apr 2025 07:00:00 GMT" data-title="‘Invasion’ barges, subsea cable cutters and surprise naval drills: how China is testing Donald Trump - The Guardian">
+            <td>Mon, 14 Apr 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMirgFBVV95cUxPeG40bWJxd0psRW02alhMdjhvdlA3ZTc0dGVQR0ZKY1IzVHZiMW9RR01tZnZncGg1MDYyUWROMWh3YzJkRjU5aVk0UERtNzNUbTVhWWNGb2hGNTQzaTdkZ3o3N2hCNGhETHNDbkhERWIyaWJKN051VklKMnlSUUlDOWUtc1BZNXRCelF0d1pHblFCbFhPSVJMZFJLV3VubUNnUmp6djBYNnhhWXNUaUE?oc=5" target="_blank">‘Invasion’ barges, subsea cable cutters and surprise naval drills: how China is testing Donald Trump - The Guardian</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Sat, 18 Jan 2025 08:00:00 GMT" data-title="Internet disruptions reported in western Alaska due to apparent subsea cable break - KNOM Radio Mission">
+            <td>Sat, 18 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMinwFBVV95cUxNVmx5dGxrdHh3S1FrSGVnQXVmMUtmYTVyX3lwRnlOZURSblB2bXoxYXBaZ3FBU3pjS1N1cXpCTnFPX05rU1BaUjZkaDlBcFBFZ1hrOG5keDI3WDZVaTI2NXI3MDNjdFc5a2Q3ME50ZmlvaEVYMFhlOE5VM0x3T1ZUQjN2RUUyczVFUy1ETVFUUGJnOGQ4Unl4bEh6MmhTWW8?oc=5" target="_blank">Internet disruptions reported in western Alaska due to apparent subsea cable break - KNOM Radio Mission</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 24 Feb 2025 08:00:00 GMT" data-title="European Commission launches initiative for subsea cable security - Data Center Dynamics">
+            <td>Mon, 24 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMirgFBVV95cUxNUmc2R0FDUWNIWHNFa2VFRmhuVWVGeHFYa1Z6Y25CeVVKSGlSTkllWFNiX29FX18tT2pkX09FMEl6S2lEMHBNT2Rpc0R5TWI5VFMteVNWTTlqNWpCbGNxaWd3WG5VWTBLalgxVTdJcDk4bzlfS29oeFR0OWVEWTVoRl9MYjhwTjM1OG50bXRGQ3o5RUxRY0VzOXBNeERXZWhhUExiTUtwb1JUZkhkM0E?oc=5" target="_blank">European Commission launches initiative for subsea cable security - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 11 Feb 2025 08:00:00 GMT" data-title="Tunisie Telecom joins Medusa submarine cable system - Data Center Dynamics">
+            <td>Tue, 11 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxQQi1zeVJ3Y1FiMFpub0g5Q01ZMkg0dEVzTnI1SmJGdmRGRXBCWVpzYmVjVEQ3U0ZEMElyd1ZlcEJjMkk1QW16Y0tsbmV6QVA3ZDhnRzQzWnJBR1JEV3VzdlkwWG1adWt6YzZFaHpvVG1iXzF0aS0zVVBZYjdZYkFjZHF0YWNGeDRNWUlSYkZpaEs2dWdNdnZFeWc4NA?oc=5" target="_blank">Tunisie Telecom joins Medusa submarine cable system - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Sat, 21 Dec 2024 08:00:00 GMT" data-title="DHS Leadership to Support Subsea Cable Security & Resilience - HSToday">
+            <td>Sat, 21 Dec 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiogFBVV95cUxQSmhvZEVwUi1GTUFwMFpuNFJaMXdUY3IxVURYYjRKSlI3emRvYzNadVA0enBLNE5MS1puVUtIYTdfYkVuOTZfeHNQc3dKNHRGZ2JpczBaQlJ0YVRTbnlOajEtQ2t6bVFYYWQzWXcydGhzS3BuLUdjY09zelJmb3lyYUMwRlMxSEgtbGFQa2VaWF9KVUJVbGtZM2ZhTHhkUkZqelE?oc=5" target="_blank">DHS Leadership to Support Subsea Cable Security & Resilience - HSToday</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 11 Feb 2025 08:00:00 GMT" data-title="Ground broken in Virginia Beach on subsea cable fiber optic project - WAVY.com">
+            <td>Tue, 11 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivAFBVV95cUxQbVVOWUllVDgtR0JWaU01blktRW9TNE15cDVPMzh4bTZRMGg3aGhPb19ONU9qTmZZeXhMUG5ybmV6ZW5YdnNNdVI4eV9BLVl3YktieVhpNlo5R2hWYk5jM0p6WWpqVWtKZmNaOGNid2ZydER3QTgxVDJ3Q0xTR1hieTFHQVJIb2JESS14Z19tVFJnaG41a3gtZVd1cFlaeXZDMG40cDhBai1iT3hiY0JrU2x5UmlLd1puck1jZNIBwgFBVV95cUxOVTg3ZE1fZEZrQTlxZzg5QjZ5ejc0TC1FcjAyX1FMR2k3Y3lRSFVzOGk4LURoR2Y1WDVNMlB0b1JvM3BZZHJsQjQ0MTk4Z3Zxc3VxT2pKclA0Q2hlVGFxazdYdlNranJlZ1pXa3dnb0Y3UFhSUzNlTkQtbXg1VGtCWS1NR2VDY3pKeW1CMGYtdTNDR2lXTlBlME1JVW5kSTh1S1JfSGF3SmxzZHNMLWRveFlUYnJFejBCajg2TjQwRDNRdw?oc=5" target="_blank">Ground broken in Virginia Beach on subsea cable fiber optic project - WAVY.com</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 27 Nov 2024 08:00:00 GMT" data-title="Sweden urges Chinese ship to return for undersea cable investigation - NBC News">
+            <td>Wed, 27 Nov 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxOODdoQTVPZmFmQnB0VHpmM0VpY2xOM0k1STFaVEVtUmQxZGVpOG1hMUtiX0paVVhHZTdjZ1JVdEt2OXZrVXpsRlJVaE1INzdTc2tua0pHTklsb3RyYmlvVEhOUGVVZ0Jvb1k3b05vWUZsVkVITzgxMklpOEIwemw5Z3V4SWJ1cDNhdTBjTWoxa21CbTVSdVBJbHdXLWEySWp3UzVzZEF4ZUrSAVZBVV95cUxOblRWX1FWN2hDWnY2cnotUVJfcUg2VE03LS1Eai1IcWl4eG5tRFVZWXVRUVpfSVRpeWFLUXBUY1VMR092VHdIWjJiWjhGUUVJam1aMzE5Zw?oc=5" target="_blank">Sweden urges Chinese ship to return for undersea cable investigation - NBC News</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Sun, 26 Jan 2025 08:00:00 GMT" data-title="Baltic undersea cable likely damaged by external force, Latvia says - CNN">
+            <td>Sun, 26 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxPbTI3aTI1b1lzNVVjTDVCdTBTWmNFOFl0ZGdfV2FxazllNjdyNllhZXFBbWhvMFhwNE5HdkN3VnhsWmMxRkNPTzlQYjZQd0lBMTlZZzFFQ3MxZmxZVDZ3ZXV4ZGxDR1NGSllvbXRQUUd1d2d0RWUyYlh4cDBNa2UzejBQdUpWR3RwdzN3Y0VtZ3JSQdIBiAFBVV95cUxNWEVoSUl3dHhEODFuMDF6R0d4Y0ZoREF3NjIxa2tJaGRYMzlHeEM3NFFhOUxyaW51VElQMk5RYXFyYmU5X1VoVDBDcHRnbmdGalFla2UzR3VTVDVVWndmeG0tTjVlSUctTjNMT3BQX3F2RG50UFV2UUVSaTlmazdUWURNR2NhaHI2?oc=5" target="_blank">Baltic undersea cable likely damaged by external force, Latvia says - CNN</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 19 Nov 2024 08:00:00 GMT" data-title="Two undersea cables in Baltic Sea disrupted, sparking warnings of possible ‘hybrid warfare’ - CNN">
+            <td>Tue, 19 Nov 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMimgFBVV95cUxPal9QTlU0ZGRPejRVem1MY296S0h1MEVsOFlDWmdoUTd3c2xzY2l4TG9xT3E1eFR5WGNtaUMtTGlWcnlWall5ZXoyYy1JMl9QUEx3cGRrWmxkdlA3Zk1zbkRGSkJ3ejRBc3pUdDdIR3RfRXZMQ3dyQTdWc1h1eURENkhONk45RG9Ca0pXV0tfVXlWZ2tXUDd5SzJn0gGQAUFVX3lxTE9fUnVueENsU28zVTkxNnZIYkNVeHFZaFdSZjNqV1N4c2l1ME85SnlUQWNyZGVYNFlmRlk1d0JvV2J4S2dBaWhZcmFKUDNOc25lTUd5RUZZMFo4SEl0a1FmckdwdkxfU200U2htYTh2UUNNSkhqS1NSdmZFYkVpMWxzUDVvbjUyLTFZQVZrb0FjUg?oc=5" target="_blank">Two undersea cables in Baltic Sea disrupted, sparking warnings of possible ‘hybrid warfare’ - CNN</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 07 Jan 2025 08:00:00 GMT" data-title="Taiwan investigating Chinese vessel over damage to undersea cable - The Guardian">
+            <td>Tue, 07 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxOTHlreTdtbW5CeTFHQ1BMOU9lUFNoXzFNdEhjZ3ZPem91SDVxRDBuRjZ4NmdTNFc3SjNLR1FUNE80Nmc3VktsN3dRMTBrS0xUVEs3X2habENTVGJrbFBxWmsyTUktdWZQQU1ralRVTVJzQUx0VVFNM05MSmpVcVQxd0Z4UXh2WHVnanRPRFNEaXdyWDZ3ekZPVi1ES3luZkxFeTFkYUJRT1JfYWk5N0pNcg?oc=5" target="_blank">Taiwan investigating Chinese vessel over damage to undersea cable - The Guardian</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 03 Feb 2025 08:00:00 GMT" data-title="How sabotage on undersea cables affects our digital world - DW">
+            <td>Mon, 03 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiowFBVV95cUxOYTI1RzhiWk03eXU5Ny0tVEpZcDBpbEdPR3h3TlhKQldtZVd2ZmMwUTNJSk1VMUh5aUd6ek9PQWtmdGpSb19mVERQZGVsc0hpazhyU0lwSVYwdnJpQTNUbHJNVlNoQW1QWFVUb21kUl9CRVVkVlFaRmh1eVdidmpuNHZfc3Y2NnVQcGU5VXZDbnh6LXJoX0NvTkV3aXgwcUI4bVhZ0gGjAUFVX3lxTE9VYl8wNEZVY2IweEkyUjZ3R0E5ME1FNWFUdFUySnExZHBWcGJwOFZWX2FOR0VSNmlxSDJGaHJ4bHl5d2VnMDNxd05FSnlkNlA4dlJxVTJzVTc2MUhZNmpUUjZhSVg2V05IVFVfTVJoOV9vSkdYVl96VGROU3pOSzFmZ0F3bVBRQ2dsamlXam1iWElQNWk5eFAtSEpibWl0T2NCNFk?oc=5" target="_blank">How sabotage on undersea cables affects our digital world - DW</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 03 Feb 2025 08:00:00 GMT" data-title="Meta to build ORCA Taiwan-US subsea cable - Data Center Dynamics">
+            <td>Mon, 03 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxOUU1hcVVCWXRtcUlNeGhCQTdFWVVhZlMxWmdaREVCSTVfOFNLQTNFT0N2NUxxbGw3UFZ3MjJjb1F6OUlFRVUxbF9ibXI4YTJWcmM2WnRIdmt6dnNrMHA3bmwwNlRKdXlSUGNzZnlDY2hjZzhkT29yVGx4LTVGVzhWSUlFYTBkY3ozaUlpdzZB?oc=5" target="_blank">Meta to build ORCA Taiwan-US subsea cable - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 25 Feb 2025 08:00:00 GMT" data-title="Taiwan detains China-crewed ship after undersea cable cut - DW">
+            <td>Tue, 25 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMilAFBVV95cUxOREJpYXhsOW5vN0sxVEZVMzJUZEhoekpaQUlFZUV1cklGZ3hITzBJVmx2Tmt3SEU4SnlxQUx0ZExFVFRrMXVfejhqcXJIV1lYWXZhdXp1clpSV2JsZGhkU2tFelR0T2l5Zi1udlRCR09rRkpETDBiSWdoVmFKbGVUWTk2bEdxYktsanhFRzBDdFhKRnJY0gGUAUFVX3lxTE9vR3YwVU1vVTdmUG43WEVqMEdyZW00VTQ4Um1OMXBDRk5HajJpNVdhY1AwU2hjZ1YwTTFzNEFIM3JSallKTEtoZ0FRTXZzMjhzYW1wemFxcllrNmhieXFXbE1HMm9RMkpVQ2F6azc5cGNVeUwzQzFPNld1UVhCdE53MFB0Z2N0RnhxSHV6dEZKbmpTZWs?oc=5" target="_blank">Taiwan detains China-crewed ship after undersea cable cut - DW</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 18 Feb 2025 08:00:00 GMT" data-title="Meta is building the world’s longest subsea cable: Project Waterworth will span 50,000 km and connect five continents – and it aims to boost global connectivity and AI services - IT Pro">
+            <td>Tue, 18 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMifkFVX3lxTE5rdFYtVUU1cVFaNXVYZmgtZi1hV0pZNVpKTlJkT3Q4RGEwV1VnQ3VpcWFubXZzeHRORlU3ajFqem1aUjFkOTk2bEFRZ2FBQ1hsSlk5NjM4OS1pd1F4R1hGbWhuVjl5YnMwOS1hMkZQWFQ0SFF5QjRRRUpPeU9Udw?oc=5" target="_blank">Meta is building the world’s longest subsea cable: Project Waterworth will span 50,000 km and connect five continents – and it aims to boost global connectivity and AI services - IT Pro</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Tue, 18 Feb 2025 08:00:00 GMT" data-title="Meta says it plans to build the world’s longest undersea internet cable - Los Angeles Times">
+            <td>Tue, 18 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMivAFBVV95cUxNYl9DUTByRVVnVHVkeGxCSE5UaTVGSUwtMlYyNmVzUjJwNGZmXzJRcTRIV1pmNVpBZm5kaGVicWcwSlhhNDc4N2VvRl9BZUlzUURNNzhmTFlvNDJpdWU3NG11ak9LX3FmVWl3clBLM2drN3dUSWhoblZzTnpyVmp0UUR1Q0hQWlpBWmctaXp5ajBuRU93eXI2SVloQmxmYU95NTFTN2xMTURvWFdlVjkzTF82ZFY4dWRZWVRvaw?oc=5" target="_blank">Meta says it plans to build the world’s longest undersea internet cable - Los Angeles Times</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Sun, 02 Mar 2025 08:00:00 GMT" data-title="Meta's Waterworth Subsea Cable is About Geopolitics and Geoeconomics - The Maritime Executive">
+            <td>Sun, 02 Mar 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMirwFBVV95cUxOUGNvaVpmZUQ3MzlkNUUzWFdYWDFvMWVTTlFENEJnM1NZQTFJa2JEd3dTWFNKZUNacDhLTGNBdmZzUWlOSnhxcV9qN0l0cnQtZkZ2UFRjdTZjTjJ4WGdTS0xfbDdhaVdDSGFqZFI2UkozcmppZTlOR0YtTVFSQ1V5d0JtS09nbGV1ZnFQU3ZobUIzTERkSnhQYVBoNk1pOEV4dFNKcTRkamlkV0hPNTlr?oc=5" target="_blank">Meta's Waterworth Subsea Cable is About Geopolitics and Geoeconomics - The Maritime Executive</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 21 Feb 2025 08:00:00 GMT" data-title="New Undersea Cable Broken Under 'NATO Lake' - Newsweek">
+            <td>Fri, 21 Feb 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE92dzQ1YUVDNlkxTFNicVAxdXFpSHdybThYQkVNaENnSThwQ1I3aHZWekZQM1dPV05OTzFRRXEyQWVXWGJxd1ByX1MxZzgyaXVaQm1vSjB2TGcyUWJSZ0NjaWNnOTNQLVQ1Uk1TMmg3a0pMUXNfTzY3eFhYelZrdW8?oc=5" target="_blank">New Undersea Cable Broken Under 'NATO Lake' - Newsweek</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 08 Jan 2025 08:00:00 GMT" data-title="Finland says oil tanker linked to subsea cable damage has serious deficiencies - Reuters">
+            <td>Wed, 08 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiwgFBVV95cUxPVG5HcTZZbHZxdjBFdEN0cGhFNU5TLXIzbFEtdXczMGNzTFN3MTF0OE82X3p2ZC1KRjJuSFRHM0FLT2FNSHBEN29SekhzNDNoSGR2TVV6bmJycklRMDBndkJ0U29mdXg0aldVN3Z3aGRZMUlONGYxNEJDVXdNQ2UwbllkZHZ3YVQxQVR2RHRIREtPaHdhRTR6MmNzWG03ajB3TXV0LXFKT3BRZm0zUW9YQkVrYXJXdDFLSHRQVTVBS2RBQQ?oc=5" target="_blank">Finland says oil tanker linked to subsea cable damage has serious deficiencies - Reuters</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 10 Mar 2025 07:00:00 GMT" data-title="Caspian Undersea Cable Agreement Reached - SubTel Forum">
+            <td>Mon, 10 Mar 2025 07:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMic0FVX3lxTFBtTDNzcXF1cW1jeXFGanpScjhzSEZFR21FS2YtUTU4eW5ISC1ndW5helZsWTFERU9BcnJZSV9xN3B3Q1I1Wk02ZElIRlJJZHpPNzJ5M1RyRm1ld19Id0RyUVQ1SlZ6RFVkYTFnTGgwUndabWs?oc=5" target="_blank">Caspian Undersea Cable Agreement Reached - SubTel Forum</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Wed, 29 Jan 2025 08:00:00 GMT" data-title="Latvia-Sweden subsea cable damaged in Baltic Sea - Data Center Dynamics">
+            <td>Wed, 29 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMilwFBVV95cUxPeDlkLVduZjBKbFJjYUx3RWxObVk5cVROYVNPbFVLTXZJUDZUcUg0OWFhUEwwRjZmOHQxVG1YRy1UUDV3MkJxVVBxREpVR3ZXQXY0ZjQwbVlZdl80NFhCTUdNMG5rNDBTRzNpeGpZX2xSOUhUVG90S2RtQTlVVzdUcVZTMjA4d0F1ekxaY3g1YUJLM2F4aHE0?oc=5" target="_blank">Latvia-Sweden subsea cable damaged in Baltic Sea - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Fri, 24 Jan 2025 08:00:00 GMT" data-title="Bifrost subsea cable receives regulatory approval to land in the US - Light Reading">
+            <td>Fri, 24 Jan 2025 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiswFBVV95cUxPb2tjQTNtOXNiYThHNGJ1c21CcE8xODZKbEpVU1Z1QWdsUmdGTWtONFAyUzRWeWRWc29yQ2U4eEQ3UkRRMzJmUnd2Z0oyVHZCeFJDRi1GazBCZG9RSTZmTDBMaWZtNERxcjJ3TS1MTFRmS09WbDMyMWNEelIxNWFRYjBEQ1V2TE9CSWVHRnkySzM4WEZOeTNsS2xaSjdobEoxQkR4SUZnVnE1aXV3endUeEVZZw?oc=5" target="_blank">Bifrost subsea cable receives regulatory approval to land in the US - Light Reading</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 18 Nov 2024 08:00:00 GMT" data-title="Lithuania-Sweden subsea cable cut, was 10m from severed Finnish-German cable - Data Center Dynamics">
+            <td>Mon, 18 Nov 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMiuwFBVV95cUxQeExlVUpnOEMzLWttQVNaU254X0NsdXFoemNyaHZUQ1VJT1NvS29xTDJSU2I3Z3B1OUlEcXc1Tm1LMnM3a0UwREhtUTdpb0ZTSHNfTlRpckhNUDFJSTIyX3IwcVhCQXo4dHJjZklhbkstOTNnN09YbE9TRWhFcGVnTUFubE9jYzEtcHptUy1KWEZJUFVQRFNyLXhLWm8yc0hQY0wzWWNUQ3RkTXNXQ0xsQUV5MXNlR2ZnZTJN?oc=5" target="_blank">Lithuania-Sweden subsea cable cut, was 10m from severed Finnish-German cable - Data Center Dynamics</a></td>
+        </tr><tr class="" data-source="RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY" data-date="Mon, 23 Dec 2024 08:00:00 GMT" data-title="2024 in review: Submarine cables become a battleground - Light Reading">
+            <td>Mon, 23 Dec 2024 08:00:00 GMT</td>
+            <td>Subcables</td>
+            <td><a href="https://news.google.com/rss/articles/CBMioAFBVV95cUxPMHE5SXowNmQtRXFyS1cxSTZYOHhzcVBQQms3SFo1aTFPNFZ4eXN3VFdsU0U4bnpGTmpET0pEazBxRENjUVR4YjM4Y3hDeGpkRlVkVmFCZDB3RldQQWxlT21XYUNjal9FM0RvVV9vdS1LUVZkVE5PZFpremktUXo1SUdrMHJCLThJU2UzMl9PNGhkTmVrQmR5SnpxV1VrOHlJ?oc=5" target="_blank">2024 in review: Submarine cables become a battleground - Light Reading</a></td>
+        </tr>
+</tbody>
+</table>
+</div>
+
+<!-- About Modal -->
+<div id="aboutModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+
+  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:30px; width:90%; max-width:500px; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.3); animation: fadeInModal 0.3s ease;">
+    <h2 style="margin-top:0;">About This Site</h2>
+    <p style="margin:15px 0;">This website displays the latest articles from selected RSS feeds. You can filter by source, time, and keyword search. It is automatically updated daily. Made by <a href = "https://github.com/technoid99/my_news_feed" target="_blank">@technoid99</a> with ❤️.</p>
+    <div style="text-align:right;">
+      <button style="padding:8px 16px; background:#007BFF; color:white; border:none; border-radius:5px; cursor:pointer;" onclick="document.getElementById('aboutModal').style.display='none'">Close</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// -- URL Parameters
+function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        sources: params.get('sources') ? params.get('sources').split(',') : [],
+        time: params.get('time') || '48h',
+        search: params.get('search') || ''
+    };
+}
+
+function updateUrlParams() {
+    const sources = Array.from(document.querySelectorAll('.sourceFilter:checked')).map(cb => cb.value);
+    const time = document.getElementById('timeFilter').value;
+    const search = document.getElementById('searchBox').value.trim();
+
+    const params = new URLSearchParams();
+    if (sources.length) params.set('sources', sources.join(','));
+    if (time) params.set('time', time);
+    if (search) params.set('search', search);
+
+    const newUrl = window.location.pathname + '?' + params.toString();
+    window.history.replaceState(null, '', newUrl);
+}
+
+function parseBooleanSearch(query) {
+    query = query.trim();
+    if (!query) return () => true;
+
+    let terms = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < query.length; i++) {
+        const char = query[i];
+        if (char === '"') {
+            inQuotes = !inQuotes;
+            if (!inQuotes && current.length) {
+                terms.push({ type: 'TERM', value: current.toLowerCase() });
+                current = '';
+            }
+        } else if (!inQuotes && /\s/.test(char)) {
+            if (current.length) {
+                if (current.toUpperCase() === 'AND' || current.toUpperCase() === 'OR') {
+                    terms.push({ type: 'OP', value: current.toUpperCase() });
+                } else {
+                    terms.push({ type: 'TERM', value: current.toLowerCase() });
+                }
+                current = '';
+            }
+        } else {
+            current += char;
+        }
+    }
+    if (current.length) {
+        terms.push({ type: 'TERM', value: current.toLowerCase() });
+    }
+
+    if (!terms.length) return () => true;
+
+    return function(title) {
+        title = title.toLowerCase();
+        let result = null;
+        let op = 'AND';
+        for (const term of terms) {
+            if (term.type === 'OP') {
+                op = term.value;
+            } else {
+                const match = title.includes(term.value);
+                if (result === null) {
+                    result = match;
+                } else if (op === 'AND') {
+                    result = result && match;
+                } else if (op === 'OR') {
+                    result = result || match;
+                }
+            }
+        }
+        return result;
+    };
+}
+
+function applyFilters() {
+    const params = getUrlParams();
+
+    // If no sources provided, read from checked checkboxes
+    if (params.sources.length === 0) {
+        params.sources = Array.from(document.querySelectorAll('.sourceFilter:checked')).map(cb => cb.value);
+    }
+
+    // If no time provided, read from time filter
+    if (!params.time) {
+        params.time = document.getElementById('timeFilter').value;
+    }
+
+    // If no search provided, assume empty
+    if (!params.search) {
+        params.search = '';
+    }
+
+    const sourceSet = new Set(params.sources);
+    const filterTime = params.time;
+    const searchFn = parseBooleanSearch(params.search);
+
+    const now = new Date();
+
+    // If no sources selected, hide all rows immediately
+    if (params.sources.length === 0) {
+        document.querySelectorAll('#newsTable tbody tr').forEach(row => {
+            row.style.display = 'none';
+        });
+        updateArticleCount();
+        return;
+    }
+
+    document.querySelectorAll('#newsTable tbody tr').forEach(row => {
+        const source = row.getAttribute('data-source');
+        const dateStr = row.getAttribute('data-date');
+        const title = row.getAttribute('data-title');
+
+        let show = true;
+
+        if (!sourceSet.has(source)) show = false;
+
+        if (filterTime !== 'all' && dateStr) {
+            const articleDate = new Date(dateStr);
+            let diffHours = (now - articleDate) / (1000 * 60 * 60);
+            if ((filterTime === '24h' && diffHours > 24) ||
+                (filterTime === '48h' && diffHours > 48) ||
+                (filterTime === '7d' && diffHours > 168)) {
+                show = false;
+            }
+        }
+
+        if (!searchFn(title)) show = false;
+
+        row.style.display = show ? '' : 'none';
+    });
+
+    updateArticleCount();
+}
+
+
+
+function updateArticleCount() {
+    const visible = Array.from(document.querySelectorAll('#newsTable tbody tr'))
+        .filter(row => row.style.display !== 'none').length;
+    const total = document.querySelectorAll('#newsTable tbody tr').length;
+    document.getElementById('articleCount').textContent = `Showing ${visible} of ${total} articles`;
+}
+
+function selectAllSources() {
+    document.querySelectorAll('.sourceFilter').forEach(cb => cb.checked = true);
+    updateUrlParams();
+    applyFilters();
+}
+
+function selectNoSources() {
+    document.querySelectorAll('.sourceFilter').forEach(cb => cb.checked = false);
+    updateUrlParams();
+    applyFilters();
+}
+
+function showAbout() {
+    document.getElementById('aboutModal').style.display = 'block';
+}
+
+function sortTable(colIndex) {
+    const tbody = document.querySelector('#newsTable tbody');
+    const rows = Array.from(tbody.rows);
+    let asc = true;
+    rows.sort((a, b) => {
+        let valA = a.cells[colIndex].textContent.trim();
+        let valB = b.cells[colIndex].textContent.trim();
+        return asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    });
+    tbody.innerHTML = '';
+    rows.forEach(r => tbody.appendChild(r));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const params = getUrlParams();
+    if (params.time) document.getElementById('timeFilter').value = params.time;
+    if (params.search) document.getElementById('searchBox').value = params.search;
+    if (params.sources.length) {
+        document.querySelectorAll('.sourceFilter').forEach(cb => {
+            cb.checked = params.sources.includes(cb.value);
+        });
+    }
+    document.querySelectorAll('.sourceFilter').forEach(cb => cb.addEventListener('change', () => {
+        updateUrlParams();
+        applyFilters();
+    }));
+    document.getElementById('timeFilter').addEventListener('change', () => {
+        updateUrlParams();
+        applyFilters();
+    });
+    document.getElementById('searchBox').addEventListener('input', () => {
+        updateUrlParams();
+        applyFilters();
+    });
+    applyFilters();
+});
+</script>
+
+</body>
+</html>
