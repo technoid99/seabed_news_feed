@@ -1,5 +1,10 @@
 [
   {
+  "source": "Subcables",
+  "url": "https://news.google.com/rss/search?q=%22submarine%20cable%22%20OR%20%22undersea%20cable%22%20OR%20%22subsea%20cable%22%20OR%20%22ocean%20cable%22%20OR%20%22subcables%22",
+  "uniqueid": "RFpqox0asidQzIqGl6Uwt_cZqMfugpe_64yssj64TeY"
+  },
+  {
     "source": "research_submersibles_zh",
     "url": "https://news.google.com/rss/search?q=%E8%9B%9F%E9%BE%99%E5%8F%B7%20OR%20%E6%B7%B1%E6%B5%B7%E5%8B%87%E5%A3%AB%20OR%20%E5%A5%8B%E6%96%97%E8%80%85&gl=CN&hl=zh-CN&ceid=CN:zh-Hans",
     "uniqueid": "jdUEYsZ-KJ3NsvNZk3SEK8bnOFq8-q0hWDoDNi-DVeU"
@@ -53,5 +58,10 @@
     "source": "research_china_shadow_fleet_tw_zh",
     "url": "https://news.google.com/rss/search?q=%22%E5%BD%B1%E5%AD%90%E8%88%B9%E9%9A%8A%22%20OR%20%22%E5%B9%BD%E9%9D%88%E8%88%B9%E9%9A%8A%22%20OR%20%22%E7%81%B0%E8%89%B2%E8%88%B9%E9%9A%8A%22%20OR%20%22%E6%97%97%E5%B9%9F%E6%BC%82%E6%B5%AE%E5%9C%8B%22%20OR%20%22%E6%B5%B7%E5%BA%95%E5%85%89%E7%BA%96%E9%9B%BB%E7%BA%9C%22%20OR%20%22%E5%88%87%E6%96%B7%E6%B5%B7%E5%BA%95%E9%9B%BB%E7%BA%9C%22%20OR%20%22%E6%B5%B7%E5%B2%B8%E5%B7%A1%E9%98%B2%22%20OR%20%22%E9%BB%91%E5%90%8D%E5%96%AE%22&hl=zh-TW&gl=TW&ceid=TW:zh-Hant",
     "uniqueid": "6RpUgjI0xXiyK-_L_yL_DMVHm0Ro8PGVtVF-BiHSTyw"
+  },
+  {
+  "source": "Deep Sea Mining",
+  "url": "https://news.google.com/rss/search?q=%22deep%20sea%20mining%22%20OR%20%22undersea%20mining%22%20OR%20%22seabed%20mining%22%20OR%20%22seabed%20authority%22%20OR%20%22undersea%20critical%20minerals%22&hl=en-AU&gl=AU&ceid=AU%3Aen",
+  "uniqueid": "6T2W0Jpq5chLv8xQLucOtdWB_flyETcyLzTP8p5LsPI"
   }
 ]
